@@ -40,6 +40,7 @@ var biosamples = make(map[int64]*models.Biosample)
 var lastBiosampleId int64
 var biosampleLock = &sync.Mutex{}
 var c config.Conf
+var Databasename = "candig"
 
 func newIndividualID() int64 {
 	return atomic.AddInt64(&lastIndividualId, 1)
@@ -117,7 +118,7 @@ func configureAPI(api *operations.CandigMetadataAPI) http.Handler {
 
 	c.GetConf()
 	//Configure database connection
-	database.Init("candig", databaseFlags.Name)
+	database.Init(Databasename, databaseFlags.Name)
 
 	// Set your custom logger if needed. Default one is log.Printf
 	// Expected interface func(string, ...interface{})
