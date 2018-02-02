@@ -155,13 +155,13 @@ paths:
           description: "an existing item already exists"
 
 definitions:
-  OntologyTerm:
+  Ontologyterm:
     type: "object"
     required:
     - "term"
-    - "termId"
+    - "termid"
     properties:
-      termId:
+      termid:
         type: "string"
         example: "PATO:0020001"
       term:
@@ -172,7 +172,7 @@ definitions:
         format: "url"
         example: "http://purl.obolibrary.org/obo"
     example:
-      termId: "PATO:0020001"
+      termid: "PATO:0020001"
       term: "male genotypic sex"
       ontology: "http://purl.obolibrary.org/obo"
   Attribute:
@@ -197,39 +197,37 @@ definitions:
         example: "CANDIG-BCGSC-IN-d290f1ee-6c54-4b01-90e6"
       description:
         type: "string"
-      createdDate:
+      createddate:
         type: "string"
-        format: "date"
-      updatedDate:
+      updateddate:
         type: "string"
-        format: "date"
       species:
-        $ref: "#/definitions/OntologyTerm"
+        $ref: "#/definitions/Ontologyterm"
       sex:
-        $ref: "#/definitions/OntologyTerm"
+        $ref: "#/definitions/Ontologyterm"
       attributes:
         $ref: "#/definitions/Attributes"
     example:
-      createdDate: "2000-01-23"
+      createddate: "2000-01-23"
       species:
-        termId: "PATO:0020001"
+        termid: "PATO:0020001"
         term: "male genotypic sex"
         ontology: "http://purl.obolibrary.org/obo"
       sex:
-        termId: "PATO:0020001"
+        termid: "PATO:0020001"
         term: "male genotypic sex"
         ontology: "http://purl.obolibrary.org/obo"
       name: "CANDIG-BCGSC-IN-d290f1ee-6c54-4b01-90e6"
       description: "description"
       attributes: ""
       id: "d290f1ee-6c54-4b01-90e6-d701748f0851"
-      updatedDate: "2000-01-23"
+      updateddate: "2000-01-23"
   Biosample:
     type: "object"
     required:
-    - "collectionAge"
+    - "collectionage"
     - "description"
-    - "individualId"
+    - "individualid"
     - "name"
     properties:
       id:
@@ -241,29 +239,27 @@ definitions:
       description:
         type: "string"
       disease:
-        $ref: "#/definitions/OntologyTerm"
-      createdDate:
+        $ref: "#/definitions/Ontologyterm"
+      createddate:
         type: "string"
-        format: "date"
-      updatedDate:
+      updateddate:
         type: "string"
-        format: "date"
-      individualId:
+      individualid:
         type: "string"
       attributes:
         $ref: "#/definitions/Attributes"
-      collectionAge:
+      collectionage:
         type: "string"
     example:
       disease:
-        termId: "PATO:0020001"
+        termid: "PATO:0020001"
         term: "male genotypic sex"
         ontology: "http://purl.obolibrary.org/obo"
-      createdDate: "2000-01-23"
+      createddate: "2000-01-23"
       name: "CANDIG-BCGSC-SM-d290f1ee-6c54-4b01-90e6"
       description: "description"
       attributes: ""
       id: "d290f1ee-6c54-4b01-90e6-d701748f0851"
-      updatedDate: "2000-01-23"
-      individualId: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
-      collectionAge: "collectionAge"
+      updateddate: "2000-01-23"
+      individualid: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+      collectionage: "collectionage"
