@@ -56,5 +56,5 @@ clean:
 	@test ! -e bin/${BIN_NAME} || rm bin/${BIN_NAME}
 
 test:
-	cd test && go test
+	cd tests && go test
 
