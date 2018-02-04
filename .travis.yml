@@ -6,4 +6,4 @@ go:
 install:
   - go get -v github.com/Masterminds/glide 
   - make get-deps
-  - make test
+  - make && make test && make package && make push
