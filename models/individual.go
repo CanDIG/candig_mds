@@ -20,8 +20,8 @@ type Individual struct {
 	// attributes
 	Attributes Attributes `json:"attributes"`
 
-	// created date
-	CreatedDate strfmt.Date `json:"createdDate,omitempty"`
+	// createddate
+	Createddate string `json:"createddate,omitempty"`
 
 	// description
 	// Required: true
@@ -35,13 +35,13 @@ type Individual struct {
 	Name *string `json:"name"`
 
 	// sex
-	Sex *OntologyTerm `json:"sex,omitempty"`
+	Sex *Ontologyterm `json:"sex,omitempty"`
 
 	// species
-	Species *OntologyTerm `json:"species,omitempty"`
+	Species *Ontologyterm `json:"species,omitempty"`
 
-	// updated date
-	UpdatedDate strfmt.Date `json:"updatedDate,omitempty"`
+	// updateddate
+	Updateddate string `json:"updateddate,omitempty"`
 }
 
 // Validate validates this individual

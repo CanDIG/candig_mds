@@ -10,7 +10,7 @@ import (
 
 	"github.com/go-openapi/runtime"
 
-	"github.com/CanDIG/candig_mds/models"
+	models "github.com/CanDIG/candig_mds/models"
 )
 
 // GetIndividualOKCode is the HTTP code returned for type GetIndividualOK

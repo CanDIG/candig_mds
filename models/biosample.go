@@ -20,40 +20,40 @@ type Biosample struct {
 	// attributes
 	Attributes Attributes `json:"attributes"`
 
-	// collection age
+	// collectionage
 	// Required: true
-	CollectionAge *string `json:"collectionAge"`
+	Collectionage *string `json:"collectionage"`
 
-	// created date
-	CreatedDate strfmt.Date `json:"createdDate,omitempty"`
+	// createddate
+	Createddate string `json:"createddate,omitempty"`
 
 	// description
 	// Required: true
 	Description *string `json:"description"`
 
 	// disease
-	Disease *OntologyTerm `json:"disease,omitempty"`
+	Disease *Ontologyterm `json:"disease,omitempty"`
 
 	// id
 	ID string `json:"id,omitempty"`
 
-	// individual Id
+	// individualid
 	// Required: true
-	IndividualID *string `json:"individualId"`
+	Individualid *string `json:"individualid"`
 
 	// name
 	// Required: true
 	Name *string `json:"name"`
 
-	// updated date
-	UpdatedDate strfmt.Date `json:"updatedDate,omitempty"`
+	// updateddate
+	Updateddate string `json:"updateddate,omitempty"`
 }
 
 // Validate validates this biosample
 func (m *Biosample) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := m.validateCollectionAge(formats); err != nil {
+	if err := m.validateCollectionage(formats); err != nil {
 		// prop
 		res = append(res, err)
 	}
@@ -68,7 +68,7 @@ func (m *Biosample) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
-	if err := m.validateIndividualID(formats); err != nil {
+	if err := m.validateIndividualid(formats); err != nil {
 		// prop
 		res = append(res, err)
 	}
@@ -84,9 +84,9 @@ func (m *Biosample) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Biosample) validateCollectionAge(formats strfmt.Registry) error {
+func (m *Biosample) validateCollectionage(formats strfmt.Registry) error {
 
-	if err := validate.Required("collectionAge", "body", m.CollectionAge); err != nil {
+	if err := validate.Required("collectionage", "body", m.Collectionage); err != nil {
 		return err
 	}
 
@@ -121,9 +121,9 @@ func (m *Biosample) validateDisease(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Biosample) validateIndividualID(formats strfmt.Registry) error {
+func (m *Biosample) validateIndividualid(formats strfmt.Registry) error {
 
-	if err := validate.Required("individualId", "body", m.IndividualID); err != nil {
+	if err := validate.Required("individualid", "body", m.Individualid); err != nil {
 		return err
 	}
 

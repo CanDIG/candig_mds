@@ -77,15 +77,15 @@ func TestAddBiosamplesPOST(t *testing.T) {
 	sample1 := models.Biosample{
 		Name:          &nameSample1,
 		Description:   &descriptionSample1,
-		IndividualID:  &idSample1,
-		CollectionAge: &collectionageSample1,
+		Individualid:  &idSample1,
+		Collectionage: &collectionageSample1,
 	}
 
 	sample2 := models.Biosample{
 		Name:          &nameSample2,
 		Description:   &descriptionSample2,
-		IndividualID:  &idSample2,
-		CollectionAge: &collectionageSample2,
+		Individualid:  &idSample2,
+		Collectionage: &collectionageSample2,
 	}
 
 	sample1Bytes, err := json.Marshal(sample1)
