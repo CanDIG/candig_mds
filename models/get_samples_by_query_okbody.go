@@ -12,7 +12,7 @@ import (
 
 // GetSamplesByQueryOKBody get samples by query o k body
 // swagger:model getSamplesByQueryOKBody
-type GetSamplesByQueryOKBody []*Record
+type GetSamplesByQueryOKBody []*Sample
 
 // Validate validates this get samples by query o k body
 func (m GetSamplesByQueryOKBody) Validate(formats strfmt.Registry) error {

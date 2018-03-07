@@ -97,10 +97,9 @@ func addTumourboard(tumourboard *models.Tumourboard) error {
 	return nil
 }
 
-func getSamplesByQuery(query *models.Query) []*models.Record {
+func getSamplesByQuery(query *models.Query) []*models.Sample {
 	list := repos.GetAllSamples("sample")
-	fmt.Printf("%v", list)
-	return nil
+	return list
 }
 
 func logout() bool {

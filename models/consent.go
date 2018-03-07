@@ -52,8 +52,8 @@ type Consent struct {
 	// patient consented to
 	PatientConsentedTo *string `json:"patient_consented_to,omitempty" db:"patient_consented_to"`
 
-	// patient id
-	PatientID *string `json:"patient_id,omitempty" db:"patient_id"`
+	// sample id
+	SampleID *string `json:"sample_id,omitempty" db:"sample_id"`
 
 	// previously consented
 	PreviouslyConsented *string `json:"previously_consented,omitempty" db:"previously_consented"`

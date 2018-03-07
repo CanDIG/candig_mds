@@ -49,8 +49,8 @@ type Diagnosis struct {
 	// method of definitive diagnosis
 	MethodOfDefinitiveDiagnosis *string `json:"method_of_definitive_diagnosis,omitempty" db:"method_of_definitive_diagnosis"`
 
-	// patient id
-	PatientID *string `json:"patient_id,omitempty" db:"patient_id"`
+	// sample id
+	SampleID *string `json:"sample_id,omitempty" db:"sample_id"`
 
 	// prognostic biomarkers
 	PrognosticBiomarkers *string `json:"prognostic_biomarkers,omitempty" db:"prognostic_biomarkers"`

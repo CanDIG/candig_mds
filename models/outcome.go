@@ -37,8 +37,8 @@ type Outcome struct {
 	// other response classification
 	OtherResponseClassification *string `json:"other_response_classification,omitempty" db:"other_response_classification"`
 
-	// patient id
-	PatientID *string `json:"patient_id,omitempty" db:"patient_id"`
+	// sample id
+	SampleID *string `json:"sample_id,omitempty" db:"sample_id"`
 
 	// performance status
 	PerformanceStatus *string `json:"performance_status,omitempty" db:"performance_status"`

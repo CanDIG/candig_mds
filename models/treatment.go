@@ -37,8 +37,8 @@ type Treatment struct {
 	// immunotherapy details
 	ImmunotherapyDetails *string `json:"immunotherapy_details,omitempty" db:"immunotherapy_details"`
 
-	// patient id
-	PatientID *string `json:"patient_id,omitempty" db:"patient_id"`
+	// sample id
+	SampleID *string `json:"sample_id,omitempty" db:"sample_id"`
 
 	// protocol number or code
 	ProtocolNumberOrCode *string `json:"protocol_number_or_code,omitempty" db:"protocol_number_or_code"`

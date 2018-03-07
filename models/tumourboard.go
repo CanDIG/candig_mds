@@ -70,8 +70,8 @@ type Tumourboard struct {
 	// patient has been referred to a hereditary cancer program based on this molecular profiling
 	PatientHasBeenReferredToAHereditaryCancerProgramBasedOnThisMolecularProfiling *string `json:"patient_has_been_referred_to_a_hereditary_cancer_program_based_on_this_molecular_profiling,omitempty" db:"patient_has_been_referred_to_a_hereditary_cancer_program_based_on_this_molecular_profiling"`
 
-	// patient id
-	PatientID *string `json:"patient_id,omitempty" db:"patient_id"`
+	// sample id
+	SampleID *string `json:"sample_id,omitempty" db:"sample_id"`
 
 	// patient or family informed of germline variant
 	PatientOrFamilyInformedOfGermlineVariant *string `json:"patient_or_family_informed_of_germline_variant,omitempty" db:"patient_or_family_informed_of_germline_variant"`

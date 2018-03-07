@@ -58,6 +58,9 @@ type Patient struct {
 	// patient id
 	PatientID *string `json:"patient_id,omitempty" db:"patient_id"`
 
+	// sample id
+	SampleID *string `json:"sample_id,omitempty" db:"sample_id"`
+
 	// prior malignancy
 	PriorMalignancy *string `json:"prior_malignancy,omitempty" db:"prior_malignancy"`
 

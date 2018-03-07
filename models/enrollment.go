@@ -37,8 +37,8 @@ type Enrollment struct {
 	// other personalized medicine study name
 	OtherPersonalizedMedicineStudyName *string `json:"other_personalized_medicine_study_name,omitempty" db:"other_personalized_medicine_study_name"`
 
-	// patient id
-	PatientID *string `json:"patient_id,omitempty" db:"patient_id"`
+	// sample id
+	SampleID *string `json:"sample_id,omitempty" db:"sample_id"`
 
 	// primary oncologist contact
 	PrimaryOncologistContact *string `json:"primary_oncologist_contact,omitempty" db:"primary_oncologist_contact"`

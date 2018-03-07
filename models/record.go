@@ -12,31 +12,31 @@ import (
 type Record struct {
 
 	// complication
-	Complication
+	Complication *Complication
 
 	// consent
-	Consent
+	Consent *Consent
 
 	// diagnosis
-	Diagnosis
+	Diagnosis *Diagnosis
 
 	// enrollment
-	Enrollment
+	Enrollment *Enrollment
 
 	// outcome
-	Outcome
+	Outcome *Outcome
 
 	// patient
-	Patient
+	Patient *Patient
 
 	// sample
-	Sample
+	Sample *Sample
 
 	// treatment
-	Treatment
+	Treatment *Treatment
 
 	// tumourboard
-	Tumourboard
+	Tumourboard *Tumourboard
 }
 
 // MarshalBinary interface implementation

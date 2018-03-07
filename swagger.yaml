@@ -297,6 +297,10 @@ definitions:
         type: "string"
         x-nullable: true 
         x-go-custom-tag: "db:\"patient_id\""
+      sample_id:
+        type: "string"
+        x-nullable: true 
+        x-go-custom-tag: "db:\"sample_id\""
       other_ids:
         type: "string"
         x-nullable: true 
@@ -365,10 +369,10 @@ definitions:
   Enrollment:
     type: "object"
     properties:
-      patient_id:
+      sample_id:
         type: "string"
         x-nullable: true 
-        x-go-custom-tag: "db:\"patient_id\""
+        x-go-custom-tag: "db:\"sample_id\""
       enrollment_institution:
         type: "string"
         x-nullable: true 
@@ -449,10 +453,10 @@ definitions:
   Consent: 
     type: "object"
     properties: 
-      patient_id:
+      sample_id:
         type: "string"
         x-nullable: true 
-        x-go-custom-tag: "db:\"patient_id\""
+        x-go-custom-tag: "db:\"sample_id\""
       consent_id:
         type: "string"
         x-nullable: true 
@@ -532,10 +536,10 @@ definitions:
   Diagnosis: 
     type: "object"
     properties: 
-      patient_id:
+      sample_id:
         type: "string"
         x-nullable: true 
-        x-go-custom-tag: "db:\"patient_id\""
+        x-go-custom-tag: "db:\"sample_id\""
       diagnosis_id:
         type: "string"
         x-nullable: true 
@@ -615,10 +619,6 @@ definitions:
   Sample: 
     type: "object"
     properties: 
-      patient_id:
-        type: "string"
-        x-nullable: true 
-        x-go-custom-tag: "db:\"patient_id\""
       sample_id:
         type: "string"
         x-nullable: true 
@@ -714,10 +714,10 @@ definitions:
   Treatment:
     type: "object"
     properties:  
-      patient_id:
+      sample_id:
         type: "string"
         x-nullable: true 
-        x-go-custom-tag: "db:\"patient_id\""
+        x-go-custom-tag: "db:\"sample_id\""
       course_number:
         type: "string"
         x-nullable: true 
@@ -801,10 +801,10 @@ definitions:
   Outcome:
     type: "object"
     properties:     
-      patient_id:
+      sample_id:
         type: "string"
         x-nullable: true 
-        x-go-custom-tag: "db:\"patient_id\""
+        x-go-custom-tag: "db:\"sample_id\""
       physical_exam_id:
         type: "string"
         x-nullable: true 
@@ -868,10 +868,10 @@ definitions:
   Complication:
     type: "object"
     properties:
-      patient_id:
+      sample_id:
         type: "string"
         x-nullable: true 
-        x-go-custom-tag: "db:\"patient_id\""
+        x-go-custom-tag: "db:\"sample_id\""
       date:
         type: "string"
         x-nullable: true 
@@ -895,10 +895,10 @@ definitions:
   Tumourboard:
     type: "object"
     properties:
-      patient_id:
+      sample_id:
         type: "string"
         x-nullable: true 
-        x-go-custom-tag: "db:\"patient_id\""
+        x-go-custom-tag: "db:\"sample_id\""
       date_of_molecular_tumour_board:
         type: "string"
         x-nullable: true 
