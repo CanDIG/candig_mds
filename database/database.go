@@ -1,31 +1,62 @@
 package database
 
 import (
+	"log"
 
-	// SQL driver for mysql
-	_ "github.com/go-sql-driver/mysql"
-	sqlx "github.com/jmoiron/sqlx"
+	"gopkg.in/mgo.v2"
 )
 
 var databaseName string
 var connectionString string
 
+var session *mgo.Session
 var err error
 
-//DBSelect is the database reference for selects
-var DBSelect *sqlx.DB
-
-//DBUpdate is the database reference for updates
-var DBUpdate *sqlx.DB
-
-//Init creates a connection to the database
-func Init(dbName, connectionstring string, DB *sqlx.DB) *sqlx.DB {
+//DatabaseInit creates a connection to the database
+func DatabaseInit(dbName, connectionstring string) {
 	databaseName = dbName
-	connectionString = connectionstring
-	DB, err = sqlx.Connect(databaseName, connectionString)
+	connectionString = connectionstring + dbName
+
+	session, err = mgo.Dial(connectionString)
 	if err != nil {
 		panic(err)
 	}
-	DB.SetMaxOpenConns(100)
-	return DB
+}
+
+//SetCollection sets the collection
+func SetCollection(collection string) *mgo.Collection {
+	return session.DB(databaseName).C(collection)
+}
+
+//Insert allows users to add generic objects to a collection in the database
+func Insert(collection string, object interface{}) bool {
+	c := SetCollection(collection)
+	err := c.Insert(object)
+	if err != nil {
+		log.Fatal(err)
+		return false
+	}
+	return true
+}
+
+//GetAll returns an array of all objects in a collection
+func GetAll(collection string) []map[string]string {
+	c := SetCollection(collection)
+	list := make([]map[string]string, 1000)
+	err := c.Find(nil).All(&list)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return list
+}
+
+//RemoveAll will empty a collection
+func RemoveAll(collection string) bool {
+	c := SetCollection(collection)
+	_, err := c.RemoveAll(nil)
+	if err != nil {
+		log.Fatal(err)
+		return false
+	}
+	return true
 }

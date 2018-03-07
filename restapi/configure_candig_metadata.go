@@ -2,7 +2,11 @@ package restapi
 
 import (
 	"crypto/tls"
+	localerrors "errors"
+	"fmt"
+	"io"
 	"net/http"
+	"os"
 	"strconv"
 
 	config "github.com/Bio-core/jtree/conf"
@@ -13,14 +17,112 @@ import (
 	"github.com/go-openapi/swag"
 	graceful "github.com/tylerb/graceful"
 
+	"github.com/CanDIG/candig_mds/database"
+	"github.com/CanDIG/candig_mds/models"
+	"github.com/CanDIG/candig_mds/repos"
 	"github.com/CanDIG/candig_mds/restapi/operations"
 )
 
 var c config.Conf
 
-// This file is safe to edit. Once it exists it will not be overwritten
+func addPatient(patient *models.Patient) error {
+	if patient == nil {
+		return errors.New(500, "item must be present")
+	}
+	repos.InsertPatient(*patient)
+	return nil
+}
 
-//go:generate swagger generate server --target .. --name  --spec ../swagger.yaml
+func addSample(sample *models.Sample) error {
+	if sample == nil {
+		return errors.New(500, "item must be present")
+	}
+	repos.InsertSample(*sample)
+	return nil
+}
+
+func addEnrollment(enrollment *models.Enrollment) error {
+	if enrollment == nil {
+		return errors.New(500, "item must be present")
+	}
+	repos.InsertEnrollment(*enrollment)
+	return nil
+}
+
+func addConsent(consent *models.Consent) error {
+	if consent == nil {
+		return errors.New(500, "item must be present")
+	}
+	repos.InsertConsent(*consent)
+	return nil
+}
+
+func addDiagnosis(diagnosis *models.Diagnosis) error {
+	if diagnosis == nil {
+		return errors.New(500, "item must be present")
+	}
+	repos.InsertDiagnosis(*diagnosis)
+	return nil
+}
+
+func addTreatment(treatment *models.Treatment) error {
+	if treatment == nil {
+		return errors.New(500, "item must be present")
+	}
+	repos.InsertTreatment(*treatment)
+	return nil
+}
+
+func addOutcome(outcome *models.Outcome) error {
+	if outcome == nil {
+		return errors.New(500, "item must be present")
+	}
+	repos.InsertOutcome(*outcome)
+	return nil
+}
+
+func addComplication(complication *models.Complication) error {
+	if complication == nil {
+		return errors.New(500, "item must be present")
+	}
+	repos.InsertComplication(*complication)
+	return nil
+}
+
+func addTumourboard(tumourboard *models.Tumourboard) error {
+	if tumourboard == nil {
+		return errors.New(500, "item must be present")
+	}
+	repos.InsertTumourboard(*tumourboard)
+	return nil
+}
+
+func getSamplesByQuery(query *models.Query) []*models.Record {
+	list := repos.GetAllSamples("sample")
+	fmt.Printf("%v", list)
+	return nil
+}
+
+func logout() bool {
+	return true
+}
+
+func upload(file operations.PostUploadParams) error {
+	if _, err := os.Stat("./uploads/" + file.Filename); !os.IsNotExist(err) {
+		return localerrors.New("File already exists")
+	}
+	f, err := os.OpenFile("./uploads/"+file.Filename, os.O_WRONLY|os.O_CREATE, 0666)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	_, err = io.Copy(f, file.Upfile)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	return nil
+}
 
 var databaseFlags = struct {
 	Host       string `long:"databaseHost" description:"Database Host" required:"false"`
@@ -72,6 +174,8 @@ func configureAPI(api *operations.CandigMetadataAPI) http.Handler {
 		keycloak.Init(KeycloakserverName, "http://"+ServerName, "/Jtree/metadata/0.1.0/columns", "/Jtree/metadata/0.1.0/logout")
 	}
 
+	database.DatabaseInit("candig", "mongodb://localhost:27017/")
+
 	api.JSONConsumer = runtime.JSONConsumer()
 
 	api.MultipartformConsumer = runtime.DiscardConsumer
@@ -79,40 +183,70 @@ func configureAPI(api *operations.CandigMetadataAPI) http.Handler {
 	api.JSONProducer = runtime.JSONProducer()
 
 	api.PostUploadHandler = operations.PostUploadHandlerFunc(func(params operations.PostUploadParams) middleware.Responder {
-		return middleware.NotImplemented("operation .PostUpload has not yet been implemented")
+		if err := upload(params); err != nil {
+			return operations.NewPostUploadConflict()
+		}
+		return operations.NewPostUploadOK().WithPayload(true)
 	})
 	api.AddComplicationHandler = operations.AddComplicationHandlerFunc(func(params operations.AddComplicationParams) middleware.Responder {
-		return middleware.NotImplemented("operation .AddComplication has not yet been implemented")
+		if err := addComplication(params.Complication); err != nil {
+			return operations.NewAddComplicationBadRequest()
+		}
+		return operations.NewAddComplicationCreated()
 	})
 	api.AddConsentHandler = operations.AddConsentHandlerFunc(func(params operations.AddConsentParams) middleware.Responder {
-		return middleware.NotImplemented("operation .AddConsent has not yet been implemented")
+		if err := addConsent(params.Consent); err != nil {
+			return operations.NewAddConsentBadRequest()
+		}
+		return operations.NewAddConsentCreated()
 	})
 	api.AddDiagnosisHandler = operations.AddDiagnosisHandlerFunc(func(params operations.AddDiagnosisParams) middleware.Responder {
-		return middleware.NotImplemented("operation .AddDiagnosis has not yet been implemented")
+		if err := addDiagnosis(params.Diagnosis); err != nil {
+			return operations.NewAddDiagnosisBadRequest()
+		}
+		return operations.NewAddDiagnosisCreated()
 	})
 	api.AddEnrollmentHandler = operations.AddEnrollmentHandlerFunc(func(params operations.AddEnrollmentParams) middleware.Responder {
-		return middleware.NotImplemented("operation .AddEnrollment has not yet been implemented")
+		if err := addEnrollment(params.Enrollment); err != nil {
+			return operations.NewAddEnrollmentBadRequest()
+		}
+		return operations.NewAddEnrollmentCreated()
 	})
 	api.AddOutcomeHandler = operations.AddOutcomeHandlerFunc(func(params operations.AddOutcomeParams) middleware.Responder {
-		return middleware.NotImplemented("operation .AddOutcome has not yet been implemented")
+		if err := addOutcome(params.Outcome); err != nil {
+			return operations.NewAddOutcomeBadRequest()
+		}
+		return operations.NewAddOutcomeCreated()
 	})
 	api.AddPatientHandler = operations.AddPatientHandlerFunc(func(params operations.AddPatientParams) middleware.Responder {
-		return middleware.NotImplemented("operation .AddPatient has not yet been implemented")
+		if err := addPatient(params.Patient); err != nil {
+			return operations.NewAddPatientBadRequest()
+		}
+		return operations.NewAddPatientCreated()
 	})
 	api.AddSampleHandler = operations.AddSampleHandlerFunc(func(params operations.AddSampleParams) middleware.Responder {
-		return middleware.NotImplemented("operation .AddSample has not yet been implemented")
+		if err := addSample(params.Sample); err != nil {
+			return operations.NewAddSampleBadRequest()
+		}
+		return operations.NewAddSampleCreated()
 	})
 	api.AddTreatmentHandler = operations.AddTreatmentHandlerFunc(func(params operations.AddTreatmentParams) middleware.Responder {
-		return middleware.NotImplemented("operation .AddTreatment has not yet been implemented")
+		if err := addTreatment(params.Treatment); err != nil {
+			return operations.NewAddTreatmentBadRequest()
+		}
+		return operations.NewAddTreatmentCreated()
 	})
 	api.AddTumourboardHandler = operations.AddTumourboardHandlerFunc(func(params operations.AddTumourboardParams) middleware.Responder {
-		return middleware.NotImplemented("operation .AddTumourboard has not yet been implemented")
+		if err := addTumourboard(params.Tumourboard); err != nil {
+			return operations.NewAddTumourboardBadRequest()
+		}
+		return operations.NewAddTreatmentCreated()
 	})
 	api.GetSamplesByQueryHandler = operations.GetSamplesByQueryHandlerFunc(func(params operations.GetSamplesByQueryParams) middleware.Responder {
-		return middleware.NotImplemented("operation .GetSamplesByQuery has not yet been implemented")
+		return operations.NewGetSamplesByQueryOK().WithPayload(getSamplesByQuery(params.Query))
 	})
 	api.LogoutHandler = operations.LogoutHandlerFunc(func(params operations.LogoutParams) middleware.Responder {
-		return middleware.NotImplemented("operation .Logout has not yet been implemented")
+		return operations.NewLogoutOK().WithPayload(logout())
 	})
 
 	api.ServerShutdown = func() {}
