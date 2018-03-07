@@ -1,16 +1,16 @@
-.PHONY: build build-alpine clean test help default
+.PHONY: build build-alpine clean test database help default 
 
-BIN_NAME=candig_mds
+BIN_NAME=candig
 
 VERSION := $(shell grep "const Version " version.go | sed -E 's/.*"(.+)"$$/\1/')
 GIT_COMMIT=$(shell git rev-parse HEAD)
 GIT_DIRTY=$(shell test -n "`git status --porcelain`" && echo "+CHANGES" || true)
-IMAGE_NAME := "CanDIG/candig_mds"
+IMAGE_NAME := "candig/candig"
 
 default: test
 
 help:
-	@echo 'Management commands for candig_mds:'
+	@echo 'Management commands for candig:'
 	@echo
 	@echo 'Usage:'
 	@echo '    make build           Compile the project.'
@@ -21,6 +21,7 @@ help:
 	@echo '    make test            Run tests on a compiled project.'
 	@echo '    make push            Push tagged images to registry'
 	@echo '    make clean           Clean the directory tree.'
+	@echo '    make database        creates the database structure.'
 	@echo
 
 build:
@@ -34,7 +35,7 @@ get-deps:
 build-alpine:
 	@echo "building ${BIN_NAME} ${VERSION}"
 	@echo "GOPATH=${GOPATH}"
-	go build -ldflags '-w -linkmode external -extldflags "-static" -X main.GitCommit=${GIT_COMMIT}${GIT_DIRTY} -X main.VersionPrerelease=VersionPrerelease=RC' -o bin/${BIN_NAME} cmd/candig-metadata-server/main.go 
+	go build -ldflags '-w -linkmode external -extldflags "-static" -X main.GitCommit=${GIT_COMMIT}${GIT_DIRTY} -X main.VersionPrerelease=VersionPrerelease=RC' -o bin/${BIN_NAME} cmd/jtree-metadata-server/main.go 
 
 package:
 	@echo "building image ${BIN_NAME} ${VERSION} $(GIT_COMMIT)"
@@ -56,5 +57,9 @@ clean:
 	@test ! -e bin/${BIN_NAME} || rm bin/${BIN_NAME}
 
 test:
-	cd tests && go test
+	go test ./tests
+	bash travisCheck.sh 
+
+database: 
+	bash ./sql/DatabaseRebuild.sh
 

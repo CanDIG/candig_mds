@@ -1,7 +1,7 @@
 # Build Stage
 FROM lacion/docker-alpine:gobuildimage AS build-stage
 
-LABEL app="build-candig_mds"
+LABEL app="build-jtree"
 LABEL REPO="https://github.com/CanDIG/candig_mds"
 
 ENV GOROOT=/usr/lib/go \
@@ -32,11 +32,11 @@ LABEL GIT_COMMIT=$GIT_COMMIT
 LABEL VERSION=$VERSION
 
 # Because of https://github.com/docker/docker/issues/14914
-ENV PATH=$PATH:/opt/candig_mds/bin
+ENV PATH=$PATH:/opt/jtree/bin
 
-WORKDIR /opt/candig_mds/bin
+WORKDIR /opt/jtree/bin
 
-COPY --from=build-stage /gopath/src/github.com/CanDIG/candig_mds/bin/candig_mds /opt/candig_mds/bin/
-RUN chmod +x /opt/candig_mds/bin/candig_mds
+COPY --from=build-stage /gopath/src/github.com/CanDIG/candig_mds/bin/jtree /opt/jtree/bin/
+RUN chmod +x /opt/jtree/bin/jtree
 
-CMD /opt/candig_mds/bin/candig_mds
+CMD /opt/jtree/bin/jtree

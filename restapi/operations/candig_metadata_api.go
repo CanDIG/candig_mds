@@ -23,37 +23,54 @@ import (
 // NewCandigMetadataAPI creates a new CandigMetadata instance
 func NewCandigMetadataAPI(spec *loads.Document) *CandigMetadataAPI {
 	return &CandigMetadataAPI{
-		handlers:            make(map[string]map[string]http.Handler),
-		formats:             strfmt.Default,
-		defaultConsumes:     "application/json",
-		defaultProduces:     "application/json",
-		customConsumers:     make(map[string]runtime.Consumer),
-		customProducers:     make(map[string]runtime.Producer),
-		ServerShutdown:      func() {},
-		spec:                spec,
-		ServeError:          errors.ServeError,
-		BasicAuthenticator:  security.BasicAuth,
-		APIKeyAuthenticator: security.APIKeyAuth,
-		BearerAuthenticator: security.BearerAuth,
-		JSONConsumer:        runtime.JSONConsumer(),
-		JSONProducer:        runtime.JSONProducer(),
-		AddBiosampleHandler: AddBiosampleHandlerFunc(func(params AddBiosampleParams) middleware.Responder {
-			return middleware.NotImplemented("operation AddBiosample has not yet been implemented")
+		handlers:              make(map[string]map[string]http.Handler),
+		formats:               strfmt.Default,
+		defaultConsumes:       "application/json",
+		defaultProduces:       "application/json",
+		ServerShutdown:        func() {},
+		spec:                  spec,
+		ServeError:            errors.ServeError,
+		BasicAuthenticator:    security.BasicAuth,
+		APIKeyAuthenticator:   security.APIKeyAuth,
+		BearerAuthenticator:   security.BearerAuth,
+		JSONConsumer:          runtime.JSONConsumer(),
+		MultipartformConsumer: runtime.DiscardConsumer,
+		JSONProducer:          runtime.JSONProducer(),
+		PostUploadHandler: PostUploadHandlerFunc(func(params PostUploadParams) middleware.Responder {
+			return middleware.NotImplemented("operation PostUpload has not yet been implemented")
 		}),
-		AddIndividualHandler: AddIndividualHandlerFunc(func(params AddIndividualParams) middleware.Responder {
-			return middleware.NotImplemented("operation AddIndividual has not yet been implemented")
+		AddComplicationHandler: AddComplicationHandlerFunc(func(params AddComplicationParams) middleware.Responder {
+			return middleware.NotImplemented("operation AddComplication has not yet been implemented")
 		}),
-		GetBiosampleHandler: GetBiosampleHandlerFunc(func(params GetBiosampleParams) middleware.Responder {
-			return middleware.NotImplemented("operation GetBiosample has not yet been implemented")
+		AddConsentHandler: AddConsentHandlerFunc(func(params AddConsentParams) middleware.Responder {
+			return middleware.NotImplemented("operation AddConsent has not yet been implemented")
 		}),
-		GetIndividualHandler: GetIndividualHandlerFunc(func(params GetIndividualParams) middleware.Responder {
-			return middleware.NotImplemented("operation GetIndividual has not yet been implemented")
+		AddDiagnosisHandler: AddDiagnosisHandlerFunc(func(params AddDiagnosisParams) middleware.Responder {
+			return middleware.NotImplemented("operation AddDiagnosis has not yet been implemented")
 		}),
-		SearchBiosampleHandler: SearchBiosampleHandlerFunc(func(params SearchBiosampleParams) middleware.Responder {
-			return middleware.NotImplemented("operation SearchBiosample has not yet been implemented")
+		AddEnrollmentHandler: AddEnrollmentHandlerFunc(func(params AddEnrollmentParams) middleware.Responder {
+			return middleware.NotImplemented("operation AddEnrollment has not yet been implemented")
 		}),
-		SearchIndividualHandler: SearchIndividualHandlerFunc(func(params SearchIndividualParams) middleware.Responder {
-			return middleware.NotImplemented("operation SearchIndividual has not yet been implemented")
+		AddOutcomeHandler: AddOutcomeHandlerFunc(func(params AddOutcomeParams) middleware.Responder {
+			return middleware.NotImplemented("operation AddOutcome has not yet been implemented")
+		}),
+		AddPatientHandler: AddPatientHandlerFunc(func(params AddPatientParams) middleware.Responder {
+			return middleware.NotImplemented("operation AddPatient has not yet been implemented")
+		}),
+		AddSampleHandler: AddSampleHandlerFunc(func(params AddSampleParams) middleware.Responder {
+			return middleware.NotImplemented("operation AddSample has not yet been implemented")
+		}),
+		AddTreatmentHandler: AddTreatmentHandlerFunc(func(params AddTreatmentParams) middleware.Responder {
+			return middleware.NotImplemented("operation AddTreatment has not yet been implemented")
+		}),
+		AddTumourboardHandler: AddTumourboardHandlerFunc(func(params AddTumourboardParams) middleware.Responder {
+			return middleware.NotImplemented("operation AddTumourboard has not yet been implemented")
+		}),
+		GetSamplesByQueryHandler: GetSamplesByQueryHandlerFunc(func(params GetSamplesByQueryParams) middleware.Responder {
+			return middleware.NotImplemented("operation GetSamplesByQuery has not yet been implemented")
+		}),
+		LogoutHandler: LogoutHandlerFunc(func(params LogoutParams) middleware.Responder {
+			return middleware.NotImplemented("operation Logout has not yet been implemented")
 		}),
 	}
 }
@@ -64,8 +81,6 @@ type CandigMetadataAPI struct {
 	context         *middleware.Context
 	handlers        map[string]map[string]http.Handler
 	formats         strfmt.Registry
-	customConsumers map[string]runtime.Consumer
-	customProducers map[string]runtime.Producer
 	defaultConsumes string
 	defaultProduces string
 	Middleware      func(middleware.Builder) http.Handler
@@ -82,22 +97,36 @@ type CandigMetadataAPI struct {
 
 	// JSONConsumer registers a consumer for a "application/json" mime type
 	JSONConsumer runtime.Consumer
+	// MultipartformConsumer registers a consumer for a "multipart/form-data" mime type
+	MultipartformConsumer runtime.Consumer
 
 	// JSONProducer registers a producer for a "application/json" mime type
 	JSONProducer runtime.Producer
 
-	// AddBiosampleHandler sets the operation handler for the add biosample operation
-	AddBiosampleHandler AddBiosampleHandler
-	// AddIndividualHandler sets the operation handler for the add individual operation
-	AddIndividualHandler AddIndividualHandler
-	// GetBiosampleHandler sets the operation handler for the get biosample operation
-	GetBiosampleHandler GetBiosampleHandler
-	// GetIndividualHandler sets the operation handler for the get individual operation
-	GetIndividualHandler GetIndividualHandler
-	// SearchBiosampleHandler sets the operation handler for the search biosample operation
-	SearchBiosampleHandler SearchBiosampleHandler
-	// SearchIndividualHandler sets the operation handler for the search individual operation
-	SearchIndividualHandler SearchIndividualHandler
+	// PostUploadHandler sets the operation handler for the post upload operation
+	PostUploadHandler PostUploadHandler
+	// AddComplicationHandler sets the operation handler for the add complication operation
+	AddComplicationHandler AddComplicationHandler
+	// AddConsentHandler sets the operation handler for the add consent operation
+	AddConsentHandler AddConsentHandler
+	// AddDiagnosisHandler sets the operation handler for the add diagnosis operation
+	AddDiagnosisHandler AddDiagnosisHandler
+	// AddEnrollmentHandler sets the operation handler for the add enrollment operation
+	AddEnrollmentHandler AddEnrollmentHandler
+	// AddOutcomeHandler sets the operation handler for the add outcome operation
+	AddOutcomeHandler AddOutcomeHandler
+	// AddPatientHandler sets the operation handler for the add patient operation
+	AddPatientHandler AddPatientHandler
+	// AddSampleHandler sets the operation handler for the add sample operation
+	AddSampleHandler AddSampleHandler
+	// AddTreatmentHandler sets the operation handler for the add treatment operation
+	AddTreatmentHandler AddTreatmentHandler
+	// AddTumourboardHandler sets the operation handler for the add tumourboard operation
+	AddTumourboardHandler AddTumourboardHandler
+	// GetSamplesByQueryHandler sets the operation handler for the get samples by query operation
+	GetSamplesByQueryHandler GetSamplesByQueryHandler
+	// LogoutHandler sets the operation handler for the logout operation
+	LogoutHandler LogoutHandler
 
 	// ServeError is called when an error is received, there is a default handler
 	// but you can set your own with this
@@ -157,32 +186,60 @@ func (o *CandigMetadataAPI) Validate() error {
 		unregistered = append(unregistered, "JSONConsumer")
 	}
 
+	if o.MultipartformConsumer == nil {
+		unregistered = append(unregistered, "MultipartformConsumer")
+	}
+
 	if o.JSONProducer == nil {
 		unregistered = append(unregistered, "JSONProducer")
 	}
 
-	if o.AddBiosampleHandler == nil {
-		unregistered = append(unregistered, "AddBiosampleHandler")
+	if o.PostUploadHandler == nil {
+		unregistered = append(unregistered, "PostUploadHandler")
 	}
 
-	if o.AddIndividualHandler == nil {
-		unregistered = append(unregistered, "AddIndividualHandler")
+	if o.AddComplicationHandler == nil {
+		unregistered = append(unregistered, "AddComplicationHandler")
 	}
 
-	if o.GetBiosampleHandler == nil {
-		unregistered = append(unregistered, "GetBiosampleHandler")
+	if o.AddConsentHandler == nil {
+		unregistered = append(unregistered, "AddConsentHandler")
 	}
 
-	if o.GetIndividualHandler == nil {
-		unregistered = append(unregistered, "GetIndividualHandler")
+	if o.AddDiagnosisHandler == nil {
+		unregistered = append(unregistered, "AddDiagnosisHandler")
 	}
 
-	if o.SearchBiosampleHandler == nil {
-		unregistered = append(unregistered, "SearchBiosampleHandler")
+	if o.AddEnrollmentHandler == nil {
+		unregistered = append(unregistered, "AddEnrollmentHandler")
 	}
 
-	if o.SearchIndividualHandler == nil {
-		unregistered = append(unregistered, "SearchIndividualHandler")
+	if o.AddOutcomeHandler == nil {
+		unregistered = append(unregistered, "AddOutcomeHandler")
+	}
+
+	if o.AddPatientHandler == nil {
+		unregistered = append(unregistered, "AddPatientHandler")
+	}
+
+	if o.AddSampleHandler == nil {
+		unregistered = append(unregistered, "AddSampleHandler")
+	}
+
+	if o.AddTreatmentHandler == nil {
+		unregistered = append(unregistered, "AddTreatmentHandler")
+	}
+
+	if o.AddTumourboardHandler == nil {
+		unregistered = append(unregistered, "AddTumourboardHandler")
+	}
+
+	if o.GetSamplesByQueryHandler == nil {
+		unregistered = append(unregistered, "GetSamplesByQueryHandler")
+	}
+
+	if o.LogoutHandler == nil {
+		unregistered = append(unregistered, "LogoutHandler")
 	}
 
 	if len(unregistered) > 0 {
@@ -221,10 +278,9 @@ func (o *CandigMetadataAPI) ConsumersFor(mediaTypes []string) map[string]runtime
 		case "application/json":
 			result["application/json"] = o.JSONConsumer
 
-		}
+		case "multipart/form-data":
+			result["multipart/form-data"] = o.MultipartformConsumer
 
-		if c, ok := o.customConsumers[mt]; ok {
-			result[mt] = c
 		}
 	}
 	return result
@@ -241,10 +297,6 @@ func (o *CandigMetadataAPI) ProducersFor(mediaTypes []string) map[string]runtime
 		case "application/json":
 			result["application/json"] = o.JSONProducer
 
-		}
-
-		if p, ok := o.customProducers[mt]; ok {
-			result[mt] = p
 		}
 	}
 	return result
@@ -286,32 +338,62 @@ func (o *CandigMetadataAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/biosample"] = NewAddBiosample(o.context, o.AddBiosampleHandler)
+	o.handlers["POST"]["/upload"] = NewPostUpload(o.context, o.PostUploadHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/individual"] = NewAddIndividual(o.context, o.AddIndividualHandler)
+	o.handlers["POST"]["/complication"] = NewAddComplication(o.context, o.AddComplicationHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/consent"] = NewAddConsent(o.context, o.AddConsentHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/diagnosis"] = NewAddDiagnosis(o.context, o.AddDiagnosisHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/enrollment"] = NewAddEnrollment(o.context, o.AddEnrollmentHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/outcome"] = NewAddOutcome(o.context, o.AddOutcomeHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/patient"] = NewAddPatient(o.context, o.AddPatientHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/sample"] = NewAddSample(o.context, o.AddSampleHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/treatment"] = NewAddTreatment(o.context, o.AddTreatmentHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/tumourboard"] = NewAddTumourboard(o.context, o.AddTumourboardHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/query"] = NewGetSamplesByQuery(o.context, o.GetSamplesByQueryHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/biosample/{biosampleId}"] = NewGetBiosample(o.context, o.GetBiosampleHandler)
-
-	if o.handlers["GET"] == nil {
-		o.handlers["GET"] = make(map[string]http.Handler)
-	}
-	o.handlers["GET"]["/individual/{individualId}"] = NewGetIndividual(o.context, o.GetIndividualHandler)
-
-	if o.handlers["GET"] == nil {
-		o.handlers["GET"] = make(map[string]http.Handler)
-	}
-	o.handlers["GET"]["/biosamples/search"] = NewSearchBiosample(o.context, o.SearchBiosampleHandler)
-
-	if o.handlers["GET"] == nil {
-		o.handlers["GET"] = make(map[string]http.Handler)
-	}
-	o.handlers["GET"]["/individuals/search"] = NewSearchIndividual(o.context, o.SearchIndividualHandler)
+	o.handlers["GET"]["/logout"] = NewLogout(o.context, o.LogoutHandler)
 
 }
 
@@ -326,19 +408,9 @@ func (o *CandigMetadataAPI) Serve(builder middleware.Builder) http.Handler {
 	return o.context.APIHandler(builder)
 }
 
-// Init allows you to just initialize the handler cache, you can then recompose the middleware as you see fit
+// Init allows you to just initialize the handler cache, you can then recompose the middelware as you see fit
 func (o *CandigMetadataAPI) Init() {
 	if len(o.handlers) == 0 {
 		o.initHandlerCache()
 	}
-}
-
-// RegisterConsumer allows you to add (or override) a consumer for a media type.
-func (o *CandigMetadataAPI) RegisterConsumer(mediaType string, consumer runtime.Consumer) {
-	o.customConsumers[mediaType] = consumer
-}
-
-// RegisterProducer allows you to add (or override) a producer for a media type.
-func (o *CandigMetadataAPI) RegisterProducer(mediaType string, producer runtime.Producer) {
-	o.customProducers[mediaType] = producer
 }

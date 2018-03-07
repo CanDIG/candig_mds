@@ -1,58 +1,31 @@
 package database
 
 import (
-	"log"
 
-	"github.com/globalsign/mgo"
+	// SQL driver for mysql
+	_ "github.com/go-sql-driver/mysql"
+	sqlx "github.com/jmoiron/sqlx"
 )
 
 var databaseName string
 var connectionString string
 
-var session *mgo.Session
-var db *mgo.Database
 var err error
 
+//DBSelect is the database reference for selects
+var DBSelect *sqlx.DB
+
+//DBUpdate is the database reference for updates
+var DBUpdate *sqlx.DB
+
 //Init creates a connection to the database
-func Init(dbName, connectionstring string) {
+func Init(dbName, connectionstring string, DB *sqlx.DB) *sqlx.DB {
 	databaseName = dbName
 	connectionString = connectionstring
-
-	session, err = mgo.Dial(connectionString)
+	DB, err = sqlx.Connect(databaseName, connectionString)
 	if err != nil {
 		panic(err)
 	}
-	db = session.DB(dbName)
-}
-
-//SetCollection changes the collection of the datbase context
-func SetCollection(collection string) *mgo.Collection {
-	return db.C(collection)
-}
-
-//Insert allows users to add generic objects to a collection in the database
-func Insert(collection string, object interface{}) bool {
-	c := SetCollection(collection)
-	err := c.Insert(object)
-	if err != nil {
-		log.Fatal(err)
-		return false
-	}
-	return true
-}
-
-//RemoveAll will empty a collection
-func RemoveAll(collection string) bool {
-	c := SetCollection(collection)
-	_, err := c.RemoveAll(nil)
-	if err != nil {
-		log.Fatal(err)
-		return false
-	}
-	return true
-}
-
-//Drop will drop the current database
-func Drop() {
-	db.DropDatabase()
+	DB.SetMaxOpenConns(100)
+	return DB
 }

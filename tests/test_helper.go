@@ -2,13 +2,16 @@ package tests
 
 import (
 	"net/http"
-
-	database "github.com/CanDIG/candig_mds/database"
 )
 
 //CheckPageResponse checks if a page that should respond is found correctly
 func CheckPageResponse(url string) bool {
-	response, err := http.Get(url)
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return false
+	}
+	response, err := client.Do(req)
 	if err != nil {
 		return false
 	}
@@ -36,6 +39,9 @@ func CheckNoPageResponse(url string) bool {
 	return false
 }
 
-func tearDown() {
-	database.Drop()
+func tearDown() bool {
+	result := true
+	//result = result && repos.RemoveUnitTestPatients()
+	//result = result && repos.RemoveUnitTestSamples()
+	return result
 }

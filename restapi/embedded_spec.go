@@ -9,12 +9,8 @@ import (
 	"encoding/json"
 )
 
-var (
-	// SwaggerJSON embedded version of the swagger document used at generation time
-	SwaggerJSON json.RawMessage
-	// FlatSwaggerJSON embedded flattened version of the swagger document used at generation time
-	FlatSwaggerJSON json.RawMessage
-)
+// SwaggerJSON embedded version of the swagger document used at generation time
+var SwaggerJSON json.RawMessage
 
 func init() {
 	SwaggerJSON = json.RawMessage([]byte(`{
@@ -35,26 +31,26 @@ func init() {
     "version": "0.1.0"
   },
   "host": "virtserver.swaggerhub.com",
-  "basePath": "/CanDIG/metadata/0.1.0",
+  "basePath": "/Candig",
   "paths": {
-    "/biosample": {
+    "/complication": {
       "post": {
-        "description": "Adds a biosample to the system",
+        "description": "Adds a complication to the system",
         "consumes": [
           "application/json"
         ],
         "produces": [
           "application/json"
         ],
-        "summary": "adds a biosample",
-        "operationId": "addBiosample",
+        "summary": "adds a complication",
+        "operationId": "addComplication",
         "parameters": [
           {
-            "description": "Biosample",
-            "name": "biosample",
+            "description": "Complication",
+            "name": "complication",
             "in": "body",
             "schema": {
-              "$ref": "#/definitions/Biosample"
+              "$ref": "#/definitions/Complication"
             }
           }
         ],
@@ -71,88 +67,24 @@ func init() {
         }
       }
     },
-    "/biosample/{biosampleId}": {
-      "get": {
-        "summary": "Returns an biosample by ID.",
-        "operationId": "getBiosample",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Biosample"
-              }
-            }
-          },
-          "404": {
-            "description": "Biosample not found"
-          }
-        }
-      },
-      "parameters": [
-        {
-          "type": "string",
-          "name": "biosampleId",
-          "in": "path",
-          "required": true
-        }
-      ]
-    },
-    "/biosamples/search": {
-      "get": {
-        "description": "By passing in the appropriate options, you can search for\navailable biosample\n",
-        "produces": [
-          "application/json"
-        ],
-        "summary": "searches biosamples",
-        "operationId": "searchBiosample",
-        "parameters": [
-          {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "collectionFormat": "multi",
-            "description": "pass an optional search string for looking up inventory",
-            "name": "searchString",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "search results matching criteria",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Biosample"
-              }
-            }
-          },
-          "400": {
-            "description": "bad input parameter"
-          }
-        }
-      }
-    },
-    "/individual": {
+    "/consent": {
       "post": {
-        "description": "Adds an individual to the system",
+        "description": "Adds a consent to the system",
         "consumes": [
           "application/json"
         ],
         "produces": [
           "application/json"
         ],
-        "summary": "adds an individual item",
-        "operationId": "addIndividual",
+        "summary": "adds a consent",
+        "operationId": "addConsent",
         "parameters": [
           {
-            "description": "Individual",
-            "name": "individual",
+            "description": "Consent",
+            "name": "consent",
             "in": "body",
             "schema": {
-              "$ref": "#/definitions/Individual"
+              "$ref": "#/definitions/Consent"
             }
           }
         ],
@@ -169,601 +101,1284 @@ func init() {
         }
       }
     },
-    "/individual/{individualId}": {
+    "/diagnosis": {
+      "post": {
+        "description": "Adds a diagnosis to the system",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "adds a diagnosis",
+        "operationId": "addDiagnosis",
+        "parameters": [
+          {
+            "description": "Diagnosis",
+            "name": "diagnosis",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Diagnosis"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "item created"
+          },
+          "400": {
+            "description": "invalid input, object invalid"
+          },
+          "409": {
+            "description": "an existing item already exists"
+          }
+        }
+      }
+    },
+    "/enrollment": {
+      "post": {
+        "description": "Adds an enrollment to the system",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "adds an enrollment",
+        "operationId": "addEnrollment",
+        "parameters": [
+          {
+            "description": "Enrollment",
+            "name": "enrollment",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Enrollment"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "item created"
+          },
+          "400": {
+            "description": "invalid input, object invalid"
+          },
+          "409": {
+            "description": "an existing item already exists"
+          }
+        }
+      }
+    },
+    "/logout": {
       "get": {
-        "summary": "Returns an individual by ID.",
-        "operationId": "getIndividual",
+        "description": "logs users out",
+        "produces": [
+          "application/json"
+        ],
+        "summary": "logsout",
+        "operationId": "logout",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          "404": {
+            "description": "Sample not found"
+          }
+        }
+      }
+    },
+    "/outcome": {
+      "post": {
+        "description": "Adds an outcome to the system",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "adds an outcome",
+        "operationId": "addOutcome",
+        "parameters": [
+          {
+            "description": "Outcome",
+            "name": "outcome",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Outcome"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "item created"
+          },
+          "400": {
+            "description": "invalid input, object invalid"
+          },
+          "409": {
+            "description": "an existing item already exists"
+          }
+        }
+      }
+    },
+    "/patient": {
+      "post": {
+        "description": "Adds a patient to the system",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "adds a patient item",
+        "operationId": "addPatient",
+        "parameters": [
+          {
+            "description": "Patient",
+            "name": "patient",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Patient"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "item created"
+          },
+          "400": {
+            "description": "invalid input, object invalid"
+          },
+          "409": {
+            "description": "an existing item already exists"
+          }
+        }
+      }
+    },
+    "/query": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "Query for Sample",
+        "operationId": "getSamplesByQuery",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Query"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/Individual"
+                "$ref": "#/definitions/Record"
               }
             }
           },
           "404": {
-            "description": "individual not found"
+            "description": "Sample not found"
           }
         }
-      },
-      "parameters": [
-        {
-          "type": "string",
-          "name": "individualId",
-          "in": "path",
-          "required": true
-        }
-      ]
+      }
     },
-    "/individuals/search": {
-      "get": {
-        "description": "By passing in the appropriate options, you can search for\navailable individuals\n",
+    "/sample": {
+      "post": {
+        "description": "Adds a sample to the system",
+        "consumes": [
+          "application/json"
+        ],
         "produces": [
           "application/json"
         ],
-        "summary": "searches individuals",
-        "operationId": "searchIndividual",
+        "summary": "adds a sample",
+        "operationId": "addSample",
         "parameters": [
           {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "collectionFormat": "multi",
-            "description": "pass an optional search string for looking up inventory",
-            "name": "searchString",
-            "in": "query"
+            "description": "Sample",
+            "name": "sample",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Sample"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "item created"
+          },
+          "400": {
+            "description": "invalid input, object invalid"
+          },
+          "409": {
+            "description": "an existing item already exists"
+          }
+        }
+      }
+    },
+    "/treatment": {
+      "post": {
+        "description": "Adds a treatment to the system",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "adds a treatment",
+        "operationId": "addTreatment",
+        "parameters": [
+          {
+            "description": "Treatment",
+            "name": "treatment",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Treatment"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "item created"
+          },
+          "400": {
+            "description": "invalid input, object invalid"
+          },
+          "409": {
+            "description": "an existing item already exists"
+          }
+        }
+      }
+    },
+    "/tumourboard": {
+      "post": {
+        "description": "Adds a tumourboard to the system",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "adds a tumourboard",
+        "operationId": "addTumourboard",
+        "parameters": [
+          {
+            "description": "Tumourboard",
+            "name": "tumourboard",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Tumourboard"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "item created"
+          },
+          "400": {
+            "description": "invalid input, object invalid"
+          },
+          "409": {
+            "description": "an existing item already exists"
+          }
+        }
+      }
+    },
+    "/upload": {
+      "post": {
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "summary": "Uploads a file.",
+        "parameters": [
+          {
+            "type": "file",
+            "description": "The file to upload.",
+            "name": "upfile",
+            "in": "formData"
           }
         ],
         "responses": {
           "200": {
-            "description": "search results matching criteria",
+            "description": "OK",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Individual"
-              }
+              "type": "boolean"
             }
           },
-          "400": {
-            "description": "bad input parameter"
+          "404": {
+            "description": "File not found"
+          },
+          "409": {
+            "description": "an existing item already exists"
           }
         }
       }
     }
   },
   "definitions": {
-    "Attribute": {
+    "Complication": {
       "type": "object",
-      "additionalProperties": {
-        "type": "string"
-      }
-    },
-    "Attributes": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/Attribute"
-      }
-    },
-    "Biosample": {
-      "type": "object",
-      "required": [
-        "collectionage",
-        "description",
-        "individualid",
-        "name"
-      ],
       "properties": {
-        "attributes": {
-          "$ref": "#/definitions/Attributes"
-        },
-        "collectionage": {
-          "type": "string"
-        },
-        "createddate": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "disease": {
-          "$ref": "#/definitions/Ontologyterm"
-        },
-        "id": {
+        "date": {
           "type": "string",
-          "example": "d290f1ee-6c54-4b01-90e6-d701748f0851"
+          "x-go-custom-tag": "db:\"date\"",
+          "x-nullable": true
         },
-        "individualid": {
-          "type": "string"
-        },
-        "name": {
+        "late_complication_of_therapy_developed": {
           "type": "string",
-          "example": "CANDIG-BCGSC-SM-d290f1ee-6c54-4b01-90e6"
+          "x-go-custom-tag": "db:\"late_complication_of_therapy_developed\"",
+          "x-nullable": true
         },
-        "updateddate": {
-          "type": "string"
+        "late_toxicity_detail": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"late_toxicity_detail\"",
+          "x-nullable": true
+        },
+        "patient_id": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"patient_id\"",
+          "x-nullable": true
+        },
+        "suspected_treatment_induced_neoplasm_developed": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"suspected_treatment_induced_neoplasm_developed\"",
+          "x-nullable": true
+        },
+        "treatment_induced_neoplasm_details": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"treatment_induced_neoplasm_details\"",
+          "x-nullable": true
         }
-      },
-      "example": {
-        "attributes": "",
-        "collectionage": "collectionage",
-        "createddate": "2000-01-23",
-        "description": "description",
-        "disease": {
-          "ontology": "http://purl.obolibrary.org/obo",
-          "term": "male genotypic sex",
-          "termid": "PATO:0020001"
-        },
-        "id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
-        "individualid": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
-        "name": "CANDIG-BCGSC-SM-d290f1ee-6c54-4b01-90e6",
-        "updateddate": "2000-01-23"
       }
     },
-    "Individual": {
+    "Consent": {
       "type": "object",
-      "required": [
-        "description",
-        "name"
-      ],
       "properties": {
-        "attributes": {
-          "$ref": "#/definitions/Attributes"
-        },
-        "createddate": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "id": {
+        "assent_form_version": {
           "type": "string",
-          "example": "d290f1ee-6c54-4b01-90e6-d701748f0851"
+          "x-go-custom-tag": "db:\"assent_form_version\"",
+          "x-nullable": true
         },
-        "name": {
+        "consent_date": {
           "type": "string",
-          "example": "CANDIG-BCGSC-IN-d290f1ee-6c54-4b01-90e6"
+          "x-go-custom-tag": "db:\"consent_date\"",
+          "x-nullable": true
         },
-        "sex": {
-          "$ref": "#/definitions/Ontologyterm"
+        "consent_form_complete": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"consent_form_complete\"",
+          "x-nullable": true
         },
-        "species": {
-          "$ref": "#/definitions/Ontologyterm"
+        "consent_id": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"consent_id\"",
+          "x-nullable": true
         },
-        "updateddate": {
-          "type": "string"
+        "consent_version": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"consent_version\"",
+          "x-nullable": true
+        },
+        "consenting_coordinator_name": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"consenting_coordinator_name\"",
+          "x-nullable": true
+        },
+        "date_of_assent": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"date_of_assent\"",
+          "x-nullable": true
+        },
+        "date_of_consent_withdrawal": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"date_of_consent_withdrawal\"",
+          "x-nullable": true
+        },
+        "has_consent_been_withdrawn": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"has_consent_been_withdrawn\"",
+          "x-nullable": true
+        },
+        "if_assent_not_obtained_why_not": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"if_assent_not_obtained_why_not\"",
+          "x-nullable": true
+        },
+        "name_of_other_biobank": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"name_of_other_biobank\"",
+          "x-nullable": true
+        },
+        "patient_consented_to": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"patient_consented_to\"",
+          "x-nullable": true
+        },
+        "patient_id": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"patient_id\"",
+          "x-nullable": true
+        },
+        "previously_consented": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"previously_consented\"",
+          "x-nullable": true
+        },
+        "reason_for_consent_withdrawal": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"reason_for_consent_withdrawal\"",
+          "x-nullable": true
+        },
+        "reason_for_rejection": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"reason_for_rejection\"",
+          "x-nullable": true
+        },
+        "reconsent_date": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"reconsent_date\"",
+          "x-nullable": true
+        },
+        "reconsent_version": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"reconsent_version\"",
+          "x-nullable": true
+        },
+        "type_of_consent_withdrawal": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"type_of_consent_withdrawal\"",
+          "x-nullable": true
+        },
+        "was_assent_obtained": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"was_assent_obtained\"",
+          "x-nullable": true
         }
-      },
-      "example": {
-        "attributes": "",
-        "createddate": "2000-01-23",
-        "description": "description",
-        "id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
-        "name": "CANDIG-BCGSC-IN-d290f1ee-6c54-4b01-90e6",
-        "sex": {
-          "ontology": "http://purl.obolibrary.org/obo",
-          "term": "male genotypic sex",
-          "termid": "PATO:0020001"
-        },
-        "species": {
-          "ontology": "http://purl.obolibrary.org/obo",
-          "term": "male genotypic sex",
-          "termid": "PATO:0020001"
-        },
-        "updateddate": "2000-01-23"
       }
     },
-    "Ontologyterm": {
+    "Diagnosis": {
       "type": "object",
-      "required": [
-        "term",
-        "termid"
-      ],
       "properties": {
-        "ontology": {
+        "additional_molecular_testing": {
           "type": "string",
-          "format": "url",
-          "example": "http://purl.obolibrary.org/obo"
+          "x-go-custom-tag": "db:\"additional_molecular_testing\"",
+          "x-nullable": true
         },
-        "term": {
+        "age_at_diagnosis": {
           "type": "string",
-          "example": "male genotypic sex"
+          "x-go-custom-tag": "db:\"age_at_diagnosis\"",
+          "x-nullable": true
         },
-        "termid": {
+        "biomarker_quantification": {
           "type": "string",
-          "example": "PATO:0020001"
-        }
-      },
-      "example": {
-        "ontology": "http://purl.obolibrary.org/obo",
-        "term": "male genotypic sex",
-        "termid": "PATO:0020001"
-      }
-    }
-  }
-}`))
-	FlatSwaggerJSON = json.RawMessage([]byte(`{
-  "schemes": [
-    "http"
-  ],
-  "swagger": "2.0",
-  "info": {
-    "description": "Metadata API",
-    "title": "Candig Metadata API",
-    "contact": {
-      "email": "info@distributedgenomics.ca"
-    },
-    "license": {
-      "name": "GPL",
-      "url": "https://www.gnu.org/licenses/gpl-3.0.en.html"
-    },
-    "version": "0.1.0"
-  },
-  "host": "virtserver.swaggerhub.com",
-  "basePath": "/CanDIG/metadata/0.1.0",
-  "paths": {
-    "/biosample": {
-      "post": {
-        "description": "Adds a biosample to the system",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "summary": "adds a biosample",
-        "operationId": "addBiosample",
-        "parameters": [
-          {
-            "description": "Biosample",
-            "name": "biosample",
-            "in": "body",
-            "schema": {
-              "$ref": "#/definitions/Biosample"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "item created"
-          },
-          "400": {
-            "description": "invalid input, object invalid"
-          },
-          "409": {
-            "description": "an existing item already exists"
-          }
-        }
-      }
-    },
-    "/biosample/{biosampleId}": {
-      "get": {
-        "summary": "Returns an biosample by ID.",
-        "operationId": "getBiosample",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/getBiosampleOKBody"
-            }
-          },
-          "404": {
-            "description": "Biosample not found"
-          }
-        }
-      },
-      "parameters": [
-        {
+          "x-go-custom-tag": "db:\"biomarker_quantification\"",
+          "x-nullable": true
+        },
+        "cancer_site": {
           "type": "string",
-          "name": "biosampleId",
-          "in": "path",
-          "required": true
+          "x-go-custom-tag": "db:\"cancer_site\"",
+          "x-nullable": true
+        },
+        "cancer_type": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"cancer_type\"",
+          "x-nullable": true
+        },
+        "classification": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"classification\"",
+          "x-nullable": true
+        },
+        "diagnosis_date": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"diagnosis_date\"",
+          "x-nullable": true
+        },
+        "diagnosis_id": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"diagnosis_id\"",
+          "x-nullable": true
+        },
+        "grading_system_used": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"grading_system_used\"",
+          "x-nullable": true
+        },
+        "histology": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"histology\"",
+          "x-nullable": true
+        },
+        "method_of_definitive_diagnosis": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"method_of_definitive_diagnosis\"",
+          "x-nullable": true
+        },
+        "patient_id": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"patient_id\"",
+          "x-nullable": true
+        },
+        "prognostic_biomarkers": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"prognostic_biomarkers\"",
+          "x-nullable": true
+        },
+        "sample_site": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"sample_site\"",
+          "x-nullable": true
+        },
+        "sample_type": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"sample_type\"",
+          "x-nullable": true
+        },
+        "sites_of_metastases": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"sites_of_metastases\"",
+          "x-nullable": true
+        },
+        "specific_tumour_stage_at_diagnosis": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"specific_tumour_stage_at_diagnosis\"",
+          "x-nullable": true
+        },
+        "staging_system": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"staging_system\"",
+          "x-nullable": true
+        },
+        "tumour_grade": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"tumour_grade\"",
+          "x-nullable": true
+        },
+        "version_or_edition_of_the_staging_system": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"version_or_edition_of_the_staging_system\"",
+          "x-nullable": true
         }
-      ]
+      }
     },
-    "/biosamples/search": {
-      "get": {
-        "description": "By passing in the appropriate options, you can search for\navailable biosample\n",
-        "produces": [
-          "application/json"
-        ],
-        "summary": "searches biosamples",
-        "operationId": "searchBiosample",
-        "parameters": [
-          {
+    "Enrollment": {
+      "type": "object",
+      "properties": {
+        "age_at_enrollment": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"age_at_enrollment\"",
+          "x-nullable": true
+        },
+        "cross_enrollment": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"cross_enrollment\"",
+          "x-nullable": true
+        },
+        "eligibility_at_enrollment": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"eligibility_at_enrollment\"",
+          "x-nullable": true
+        },
+        "enrollment_approval_date": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"enrollment_approval_date\"",
+          "x-nullable": true
+        },
+        "enrollment_institution": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"enrollment_institution\"",
+          "x-nullable": true
+        },
+        "other_personalized_medicine_study_id": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"other_personalized_medicine_study_id\"",
+          "x-nullable": true
+        },
+        "other_personalized_medicine_study_name": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"other_personalized_medicine_study_name\"",
+          "x-nullable": true
+        },
+        "patient_id": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"patient_id\"",
+          "x-nullable": true
+        },
+        "primary_oncologist_contact": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"primary_oncologist_contact\"",
+          "x-nullable": true
+        },
+        "primary_oncologist_name": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"primary_oncologist_name\"",
+          "x-nullable": true
+        },
+        "referring_physician_contact": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"referring_physician_contact\"",
+          "x-nullable": true
+        },
+        "referring_physician_name": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"referring_physician_name\"",
+          "x-nullable": true
+        },
+        "status_at_enrollment": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"status_at_enrollment\"",
+          "x-nullable": true
+        },
+        "summary_of_id_request": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"summary_of_id_request\"",
+          "x-nullable": true
+        },
+        "treating_centre_name": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"treating_centre_name\"",
+          "x-nullable": true
+        },
+        "treating_centre_province": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"treating_centre_province\"",
+          "x-nullable": true
+        }
+      }
+    },
+    "Outcome": {
+      "type": "object",
+      "properties": {
+        "date_of_assessment": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"date_of_assessment\"",
+          "x-nullable": true
+        },
+        "disease_response_or_status": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"disease_response_or_status\"",
+          "x-nullable": true
+        },
+        "height": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"height\"",
+          "x-nullable": true
+        },
+        "height_units": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"height_units\"",
+          "x-nullable": true
+        },
+        "method_of_response_evaluation": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"method_of_response_evaluation\"",
+          "x-nullable": true
+        },
+        "minimal_residual_disease_assessment": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"minimal_residual_disease_assessment\"",
+          "x-nullable": true
+        },
+        "other_response_classification": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"other_response_classification\"",
+          "x-nullable": true
+        },
+        "patient_id": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"patient_id\"",
+          "x-nullable": true
+        },
+        "performance_status": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"performance_status\"",
+          "x-nullable": true
+        },
+        "physical_exam_id": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"physical_exam_id\"",
+          "x-nullable": true
+        },
+        "response_criteria_used": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"response_criteria_used\"",
+          "x-nullable": true
+        },
+        "sites_of_any_progression_or_recurrence": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"sites_of_any_progression_or_recurrence\"",
+          "x-nullable": true
+        },
+        "summary_stage": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"summary_stage\"",
+          "x-nullable": true
+        },
+        "vital_status": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"vital_status\"",
+          "x-nullable": true
+        },
+        "weight": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"weight\"",
+          "x-nullable": true
+        },
+        "weight_units": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"weight_units\"",
+          "x-nullable": true
+        }
+      }
+    },
+    "Patient": {
+      "type": "object",
+      "properties": {
+        "autopsy_tissue_for_research": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"autopsy_tissue_for_research\"",
+          "x-nullable": true
+        },
+        "cause_of_death": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"cause_of_death\"",
+          "x-nullable": true
+        },
+        "date_of_birth": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"date_of_birth\"",
+          "x-nullable": true
+        },
+        "date_of_death": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"date_of_death\"",
+          "x-nullable": true
+        },
+        "details_of_predisposition_syndrome": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"details_of_predisposition_syndrome\"",
+          "x-nullable": true
+        },
+        "ethnicity": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"ethnicity\"",
+          "x-nullable": true
+        },
+        "family_history_and_risk_factors": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"family_history_and_risk_factors\"",
+          "x-nullable": true
+        },
+        "family_history_of_predisposition_syndrome": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"family_history_of_predisposition_syndrome\"",
+          "x-nullable": true
+        },
+        "gender": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"gender\"",
+          "x-nullable": true
+        },
+        "genetic_cancer_syndrome": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"genetic_cancer_syndrome\"",
+          "x-nullable": true
+        },
+        "occupational_or_environmental_exposure": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"occupational_or_environmental_exposure\"",
+          "x-nullable": true
+        },
+        "other_genetic_condition_or_significant_comorbidity": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"other_genetic_condition_or_significant_comorbidity\"",
+          "x-nullable": true
+        },
+        "other_ids": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"other_ids\"",
+          "x-nullable": true
+        },
+        "patient_id": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"patient_id\"",
+          "x-nullable": true
+        },
+        "prior_malignancy": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"prior_malignancy\"",
+          "x-nullable": true
+        },
+        "province_of_residence": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"province_of_residence\"",
+          "x-nullable": true
+        },
+        "race": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"race\"",
+          "x-nullable": true
+        }
+      }
+    },
+    "Query": {
+      "type": "object",
+      "properties": {
+        "selected_condition": {
+          "type": "array",
+          "items": {
             "type": "array",
             "items": {
               "type": "string"
-            },
-            "collectionFormat": "multi",
-            "description": "pass an optional search string for looking up inventory",
-            "name": "searchString",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "search results matching criteria",
-            "schema": {
-              "$ref": "#/definitions/searchBiosampleOKBody"
             }
-          },
-          "400": {
-            "description": "bad input parameter"
+          }
+        },
+        "selected_fields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "selected_tables": {
+          "type": "array",
+          "items": {
+            "type": "string"
           }
         }
       }
     },
-    "/individual": {
-      "post": {
-        "description": "Adds an individual to the system",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "summary": "adds an individual item",
-        "operationId": "addIndividual",
-        "parameters": [
-          {
-            "description": "Individual",
-            "name": "individual",
-            "in": "body",
-            "schema": {
-              "$ref": "#/definitions/Individual"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "item created"
-          },
-          "400": {
-            "description": "invalid input, object invalid"
-          },
-          "409": {
-            "description": "an existing item already exists"
-          }
-        }
-      }
-    },
-    "/individual/{individualId}": {
-      "get": {
-        "summary": "Returns an individual by ID.",
-        "operationId": "getIndividual",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/getIndividualOKBody"
-            }
-          },
-          "404": {
-            "description": "individual not found"
-          }
-        }
-      },
-      "parameters": [
-        {
-          "type": "string",
-          "name": "individualId",
-          "in": "path",
-          "required": true
-        }
-      ]
-    },
-    "/individuals/search": {
-      "get": {
-        "description": "By passing in the appropriate options, you can search for\navailable individuals\n",
-        "produces": [
-          "application/json"
-        ],
-        "summary": "searches individuals",
-        "operationId": "searchIndividual",
-        "parameters": [
-          {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "collectionFormat": "multi",
-            "description": "pass an optional search string for looking up inventory",
-            "name": "searchString",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "search results matching criteria",
-            "schema": {
-              "$ref": "#/definitions/searchIndividualOKBody"
-            }
-          },
-          "400": {
-            "description": "bad input parameter"
-          }
-        }
-      }
-    }
-  },
-  "definitions": {
-    "Attribute": {
+    "Record": {
       "type": "object",
-      "additionalProperties": {
-        "type": "string"
-      }
-    },
-    "Attributes": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/Attribute"
-      }
-    },
-    "Biosample": {
-      "type": "object",
-      "required": [
-        "collectionage",
-        "description",
-        "individualid",
-        "name"
-      ],
       "properties": {
-        "attributes": {
-          "$ref": "#/definitions/Attributes"
+        "Complication": {
+          "$ref": "#/definitions/Complication"
         },
-        "collectionage": {
-          "type": "string"
+        "Consent": {
+          "$ref": "#/definitions/Consent"
         },
-        "createddate": {
-          "type": "string"
+        "Diagnosis": {
+          "$ref": "#/definitions/Diagnosis"
         },
-        "description": {
-          "type": "string"
+        "Enrollment": {
+          "$ref": "#/definitions/Enrollment"
         },
-        "disease": {
-          "$ref": "#/definitions/Ontologyterm"
+        "Outcome": {
+          "$ref": "#/definitions/Outcome"
         },
-        "id": {
-          "type": "string",
-          "example": "d290f1ee-6c54-4b01-90e6-d701748f0851"
+        "Patient": {
+          "$ref": "#/definitions/Patient"
         },
-        "individualid": {
-          "type": "string"
+        "Sample": {
+          "$ref": "#/definitions/Sample"
         },
-        "name": {
-          "type": "string",
-          "example": "CANDIG-BCGSC-SM-d290f1ee-6c54-4b01-90e6"
+        "Treatment": {
+          "$ref": "#/definitions/Treatment"
         },
-        "updateddate": {
-          "type": "string"
+        "Tumourboard": {
+          "$ref": "#/definitions/Tumourboard"
         }
-      },
-      "example": {
-        "attributes": "",
-        "collectionage": "collectionage",
-        "createddate": "2000-01-23",
-        "description": "description",
-        "disease": {
-          "ontology": "http://purl.obolibrary.org/obo",
-          "term": "male genotypic sex",
-          "termid": "PATO:0020001"
-        },
-        "id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
-        "individualid": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
-        "name": "CANDIG-BCGSC-SM-d290f1ee-6c54-4b01-90e6",
-        "updateddate": "2000-01-23"
       }
     },
-    "Individual": {
+    "Sample": {
       "type": "object",
-      "required": [
-        "description",
-        "name"
-      ],
       "properties": {
-        "attributes": {
-          "$ref": "#/definitions/Attributes"
-        },
-        "createddate": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "id": {
+        "anatomic_site_the_sample_obtained_from": {
           "type": "string",
-          "example": "d290f1ee-6c54-4b01-90e6-d701748f0851"
+          "x-go-custom-tag": "db:\"anatomic_site_the_sample_obtained_from\"",
+          "x-nullable": true
         },
-        "name": {
+        "associated_biobank": {
           "type": "string",
-          "example": "CANDIG-BCGSC-IN-d290f1ee-6c54-4b01-90e6"
+          "x-go-custom-tag": "db:\"associated_biobank\"",
+          "x-nullable": true
         },
-        "sex": {
-          "$ref": "#/definitions/Ontologyterm"
+        "cancer_subtype": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"cancer_subtype\"",
+          "x-nullable": true
         },
-        "species": {
-          "$ref": "#/definitions/Ontologyterm"
+        "cancer_type": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"cancer_type\"",
+          "x-nullable": true
         },
-        "updateddate": {
-          "type": "string"
+        "collection_date": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"collection_date\"",
+          "x-nullable": true
+        },
+        "collection_hospital": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"collection_hospital\"",
+          "x-nullable": true
+        },
+        "diagnosis_id": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"diagnosis_id\"",
+          "x-nullable": true
+        },
+        "estimated_tumour_content": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"estimated_tumour_content\"",
+          "x-nullable": true
+        },
+        "if_not_explain_any_deviation": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"if_not_explain_any_deviation\"",
+          "x-nullable": true
+        },
+        "local_biobank_id": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"local_biobank_id\"",
+          "x-nullable": true
+        },
+        "morphological_code": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"morphological_code\"",
+          "x-nullable": true
+        },
+        "other_biobank": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"other_biobank\"",
+          "x-nullable": true
+        },
+        "pathology_report_id": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"pathology_report_id\"",
+          "x-nullable": true
+        },
+        "patient_id": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"patient_id\"",
+          "x-nullable": true
+        },
+        "quality_control_performed": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"quality_control_performed\"",
+          "x-nullable": true
+        },
+        "quantity": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"quantity\"",
+          "x-nullable": true
+        },
+        "received_date": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"received_date\"",
+          "x-nullable": true
+        },
+        "sample_id": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"sample_id\"",
+          "x-nullable": true
+        },
+        "sample_type": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"sample_type\"",
+          "x-nullable": true
+        },
+        "shipping_date": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"shipping_date\"",
+          "x-nullable": true
+        },
+        "sop_followed": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"sop_followed\"",
+          "x-nullable": true
+        },
+        "tissue_disease_state": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"tissue_disease_state\"",
+          "x-nullable": true
+        },
+        "topological_code": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"topological_code\"",
+          "x-nullable": true
+        },
+        "units": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"units\"",
+          "x-nullable": true
         }
-      },
-      "example": {
-        "attributes": "",
-        "createddate": "2000-01-23",
-        "description": "description",
-        "id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
-        "name": "CANDIG-BCGSC-IN-d290f1ee-6c54-4b01-90e6",
-        "sex": {
-          "ontology": "http://purl.obolibrary.org/obo",
-          "term": "male genotypic sex",
-          "termid": "PATO:0020001"
-        },
-        "species": {
-          "ontology": "http://purl.obolibrary.org/obo",
-          "term": "male genotypic sex",
-          "termid": "PATO:0020001"
-        },
-        "updateddate": "2000-01-23"
       }
     },
-    "Ontologyterm": {
+    "Treatment": {
       "type": "object",
-      "required": [
-        "term",
-        "termid"
-      ],
       "properties": {
-        "ontology": {
+        "chemotherapy_details": {
           "type": "string",
-          "format": "url",
-          "example": "http://purl.obolibrary.org/obo"
+          "x-go-custom-tag": "db:\"chemotherapy_details\"",
+          "x-nullable": true
         },
-        "term": {
+        "course_number": {
           "type": "string",
-          "example": "male genotypic sex"
+          "x-go-custom-tag": "db:\"course_number\"",
+          "x-nullable": true
         },
-        "termid": {
+        "date_of_recurrence_or_progression_after_this_treatment": {
           "type": "string",
-          "example": "PATO:0020001"
+          "x-go-custom-tag": "db:\"date_of_recurrence_or_progression_after_this_treatment\"",
+          "x-nullable": true
+        },
+        "drug_id_numbers": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"drug_id_numbers\"",
+          "x-nullable": true
+        },
+        "drug_list_or_agent": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"drug_list_or_agent\"",
+          "x-nullable": true
+        },
+        "hematopoietic_cell_transplant": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"hematopoietic_cell_transplant\"",
+          "x-nullable": true
+        },
+        "immunotherapy_details": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"immunotherapy_details\"",
+          "x-nullable": true
+        },
+        "patient_id": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"patient_id\"",
+          "x-nullable": true
+        },
+        "protocol_number_or_code": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"protocol_number_or_code\"",
+          "x-nullable": true
+        },
+        "radiotherapy_details": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"radiotherapy_details\"",
+          "x-nullable": true
+        },
+        "reason_for_ending_the_treatment": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"reason_for_ending_the_treatment\"",
+          "x-nullable": true
+        },
+        "response_criteria_used": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"response_criteria_used\"",
+          "x-nullable": true
+        },
+        "response_to_treatment": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"response_to_treatment\"",
+          "x-nullable": true
+        },
+        "start_date": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"start_date\"",
+          "x-nullable": true
+        },
+        "stop_date": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"stop_date\"",
+          "x-nullable": true
+        },
+        "surgery_details": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"surgery_details\"",
+          "x-nullable": true
+        },
+        "systematic_therapy_agent_name": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"systematic_therapy_agent_name\"",
+          "x-nullable": true
+        },
+        "therapeutic_modality": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"therapeutic_modality\"",
+          "x-nullable": true
+        },
+        "treatment_intent": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"treatment_intent\"",
+          "x-nullable": true
+        },
+        "treatment_plan_type": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"treatment_plan_type\"",
+          "x-nullable": true
+        },
+        "unexpected_or_unusual_toxicity_during_treatment": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"unexpected_or_unusual_toxicity_during_treatment\"",
+          "x-nullable": true
         }
-      },
-      "example": {
-        "ontology": "http://purl.obolibrary.org/obo",
-        "term": "male genotypic sex",
-        "termid": "PATO:0020001"
       }
     },
-    "getBiosampleOKBody": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/Biosample"
-      },
-      "x-go-gen-location": "operations"
-    },
-    "getIndividualOKBody": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/Individual"
-      },
-      "x-go-gen-location": "operations"
-    },
-    "searchBiosampleOKBody": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/Biosample"
-      },
-      "x-go-gen-location": "operations"
-    },
-    "searchIndividualOKBody": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/Individual"
-      },
-      "x-go-gen-location": "operations"
+    "Tumourboard": {
+      "type": "object",
+      "properties": {
+        "actionable_target_found": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"actionable_target_found\"",
+          "x-nullable": true
+        },
+        "agent_or_drug_class": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"agent_or_drug_class\"",
+          "x-nullable": true
+        },
+        "analyses_discussed": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"analyses_discussed\"",
+          "x-nullable": true
+        },
+        "classification_of_variants": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"classification_of_variants\"",
+          "x-nullable": true
+        },
+        "clinical_validation_progress": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"clinical_validation_progress\"",
+          "x-nullable": true
+        },
+        "cnvs_discussed": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"cnvs_discussed\"",
+          "x-nullable": true
+        },
+        "date_of_molecular_tumour_board": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"date_of_molecular_tumour_board\"",
+          "x-nullable": true
+        },
+        "details_of_treatment_plan_impact": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"details_of_treatment_plan_impact\"",
+          "x-nullable": true
+        },
+        "did_treatment_plan_change_based_on_profiling_result": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"did_treatment_plan_change_based_on_profiling_result\"",
+          "x-nullable": true
+        },
+        "disease_expression_comparator": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"disease_expression_comparator\"",
+          "x-nullable": true
+        },
+        "germline_dna_sample_id": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"germline_dna_sample_id\"",
+          "x-nullable": true
+        },
+        "germline_snv_discussed": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"germline_snv_discussed\"",
+          "x-nullable": true
+        },
+        "has_a_germline_variant_been_identified_by_profiling_that_may_predispose_to_cancer": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"has_a_germline_variant_been_identified_by_profiling_that_may_predispose_to_cancer\"",
+          "x-nullable": true
+        },
+        "how_treatment_has_altered_based_on_profiling": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"how_treatment_has_altered_based_on_profiling\"",
+          "x-nullable": true
+        },
+        "level_of_evidence_for_expression_target_agent_match": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"level_of_evidence_for_expression_target_agent_match\"",
+          "x-nullable": true
+        },
+        "molecular_tumour_board_recommendation": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"molecular_tumour_board_recommendation\"",
+          "x-nullable": true
+        },
+        "normal_expression_comparator": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"normal_expression_comparator\"",
+          "x-nullable": true
+        },
+        "patient_has_been_referred_to_a_hereditary_cancer_program_based_on_this_molecular_profiling": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"patient_has_been_referred_to_a_hereditary_cancer_program_based_on_this_molecular_profiling\"",
+          "x-nullable": true
+        },
+        "patient_id": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"patient_id\"",
+          "x-nullable": true
+        },
+        "patient_or_family_informed_of_germline_variant": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"patient_or_family_informed_of_germline_variant\"",
+          "x-nullable": true
+        },
+        "reason_treatment_plan_did_not_change_based_on_profiling": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"reason_treatment_plan_did_not_change_based_on_profiling\"",
+          "x-nullable": true
+        },
+        "somatic_sample_type": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"somatic_sample_type\"",
+          "x-nullable": true
+        },
+        "somatic_snv_discussed": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"somatic_snv_discussed\"",
+          "x-nullable": true
+        },
+        "structural_variant_discussed": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"structural_variant_discussed\"",
+          "x-nullable": true
+        },
+        "summary_report": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"summary_report\"",
+          "x-nullable": true
+        },
+        "tumour_dna_sample_id": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"tumour_dna_sample_id\"",
+          "x-nullable": true
+        },
+        "tumour_rna_sample_id": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"tumour_rna_sample_id\"",
+          "x-nullable": true
+        },
+        "type_of_sample_analyzed": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"type_of_sample_analyzed\"",
+          "x-nullable": true
+        },
+        "type_of_tumour_sample_analyzed": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"type_of_tumour_sample_analyzed\"",
+          "x-nullable": true
+        },
+        "type_of_validation": {
+          "type": "string",
+          "x-go-custom-tag": "db:\"type_of_validation\"",
+          "x-nullable": true
+        }
+      }
     }
   }
 }`))
