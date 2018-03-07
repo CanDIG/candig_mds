@@ -31,6 +31,9 @@ type Complication struct {
 
 	// treatment induced neoplasm details
 	TreatmentInducedNeoplasmDetails *string `json:"treatment_induced_neoplasm_details,omitempty" db:"treatment_induced_neoplasm_details"`
+
+	// hash induced neoplasm details
+	Hash *string `json:"hash,omitempty" db:"hash"`
 }
 
 // Validate validates this complication

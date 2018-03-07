@@ -63,6 +63,9 @@ type Outcome struct {
 
 	// weight units
 	WeightUnits *string `json:"weight_units,omitempty" db:"weight_units"`
+
+	// hash induced neoplasm details
+	Hash *string `json:"hash,omitempty" db:"hash"`
 }
 
 // Validate validates this outcome

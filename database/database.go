@@ -39,6 +39,17 @@ func Insert(collection string, object interface{}) bool {
 	return true
 }
 
+//Update allows users to add generic objects to a collection in the database
+func Update(collection string, selector interface{}, object interface{}) bool {
+	c := SetCollection(collection)
+	err := c.Update(selector, object)
+	if err != nil {
+		log.Fatal(err)
+		return false
+	}
+	return true
+}
+
 //GetAll returns an array of all objects in a collection
 func GetAll(collection string) []map[string]string {
 	c := SetCollection(collection)

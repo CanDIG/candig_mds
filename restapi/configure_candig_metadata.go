@@ -2,8 +2,10 @@ package restapi
 
 import (
 	"crypto/tls"
+	"encoding/json"
 	localerrors "errors"
 	"fmt"
+	"hash/fnv"
 	"io"
 	"net/http"
 	"os"
@@ -29,7 +31,15 @@ func addPatient(patient *models.Patient) error {
 	if patient == nil {
 		return errors.New(500, "item must be present")
 	}
-	repos.InsertPatient(*patient)
+	if repos.CheckIfPatientExists(*patient.PatientID) {
+		return errors.New(500, "Already Exists")
+	}
+	sample := repos.GetSampleByID(*patient.SampleID)
+	if sample == nil {
+		return errors.New(500, "Sample does not exist")
+	}
+	sample.Patient = patient
+	repos.UpdateSample(*sample)
 	return nil
 }
 
@@ -37,6 +47,10 @@ func addSample(sample *models.Sample) error {
 	if sample == nil {
 		return errors.New(500, "item must be present")
 	}
+	if repos.CheckIfSampleExists(*sample.SampleID) {
+		return errors.New(500, "Already Exists")
+	}
+	sample = AddHashes(sample)
 	repos.InsertSample(*sample)
 	return nil
 }
@@ -45,7 +59,18 @@ func addEnrollment(enrollment *models.Enrollment) error {
 	if enrollment == nil {
 		return errors.New(500, "item must be present")
 	}
-	repos.InsertEnrollment(*enrollment)
+	jdata, _ := json.Marshal(enrollment)
+	jstring := hash(string(jdata))
+	enrollment.Hash = &jstring
+	if repos.CheckIfEnrollmentExists(*enrollment.Hash) {
+		return errors.New(500, "Already Exists")
+	}
+	sample := repos.GetSampleByID(*enrollment.SampleID)
+	if sample == nil {
+		return errors.New(500, "Sample does not exist")
+	}
+	sample.Enrollments = append(sample.Enrollments, enrollment)
+	repos.UpdateSample(*sample)
 	return nil
 }
 
@@ -53,7 +78,18 @@ func addConsent(consent *models.Consent) error {
 	if consent == nil {
 		return errors.New(500, "item must be present")
 	}
-	repos.InsertConsent(*consent)
+	jdata, _ := json.Marshal(consent)
+	jstring := hash(string(jdata))
+	consent.Hash = &jstring
+	if repos.CheckIfConsentExists(*consent.Hash) {
+		return errors.New(500, "Already Exists")
+	}
+	sample := repos.GetSampleByID(*consent.SampleID)
+	if sample == nil {
+		return errors.New(500, "Sample does not exist")
+	}
+	sample.Consents = append(sample.Consents, consent)
+	repos.UpdateSample(*sample)
 	return nil
 }
 
@@ -61,7 +97,18 @@ func addDiagnosis(diagnosis *models.Diagnosis) error {
 	if diagnosis == nil {
 		return errors.New(500, "item must be present")
 	}
-	repos.InsertDiagnosis(*diagnosis)
+	jdata, _ := json.Marshal(diagnosis)
+	jstring := hash(string(jdata))
+	diagnosis.Hash = &jstring
+	if repos.CheckIfDiagnosisExists(*diagnosis.Hash) {
+		return errors.New(500, "Already Exists")
+	}
+	sample := repos.GetSampleByID(*diagnosis.SampleID)
+	if sample == nil {
+		return errors.New(500, "Sample does not exist")
+	}
+	sample.Diagnosis = append(sample.Diagnosis, diagnosis)
+	repos.UpdateSample(*sample)
 	return nil
 }
 
@@ -69,7 +116,18 @@ func addTreatment(treatment *models.Treatment) error {
 	if treatment == nil {
 		return errors.New(500, "item must be present")
 	}
-	repos.InsertTreatment(*treatment)
+	jdata, _ := json.Marshal(treatment)
+	jstring := hash(string(jdata))
+	treatment.Hash = &jstring
+	if repos.CheckIfTreatmentExists(*treatment.Hash) {
+		return errors.New(500, "Already Exists")
+	}
+	sample := repos.GetSampleByID(*treatment.SampleID)
+	if sample == nil {
+		return errors.New(500, "Sample does not exist")
+	}
+	sample.Treatments = append(sample.Treatments, treatment)
+	repos.UpdateSample(*sample)
 	return nil
 }
 
@@ -77,7 +135,18 @@ func addOutcome(outcome *models.Outcome) error {
 	if outcome == nil {
 		return errors.New(500, "item must be present")
 	}
-	repos.InsertOutcome(*outcome)
+	jdata, _ := json.Marshal(outcome)
+	jstring := hash(string(jdata))
+	outcome.Hash = &jstring
+	if repos.CheckIfOutcomeExists(*outcome.Hash) {
+		return errors.New(500, "Already Exists")
+	}
+	sample := repos.GetSampleByID(*outcome.SampleID)
+	if sample == nil {
+		return errors.New(500, "Sample does not exist")
+	}
+	sample.Outcomes = append(sample.Outcomes, outcome)
+	repos.UpdateSample(*sample)
 	return nil
 }
 
@@ -85,7 +154,18 @@ func addComplication(complication *models.Complication) error {
 	if complication == nil {
 		return errors.New(500, "item must be present")
 	}
-	repos.InsertComplication(*complication)
+	jdata, _ := json.Marshal(complication)
+	jstring := hash(string(jdata))
+	complication.Hash = &jstring
+	if repos.CheckIfComplicationExists(*complication.Hash) {
+		return errors.New(500, "Already Exists")
+	}
+	sample := repos.GetSampleByID(*complication.SampleID)
+	if sample == nil {
+		return errors.New(500, "Sample does not exist")
+	}
+	sample.Complications = append(sample.Complications, complication)
+	repos.UpdateSample(*sample)
 	return nil
 }
 
@@ -93,7 +173,12 @@ func addTumourboard(tumourboard *models.Tumourboard) error {
 	if tumourboard == nil {
 		return errors.New(500, "item must be present")
 	}
-	repos.InsertTumourboard(*tumourboard)
+	sample := repos.GetSampleByID(*tumourboard.SampleID)
+	if sample == nil {
+		return errors.New(500, "Sample does not exist")
+	}
+	sample.Tumourboards = append(sample.Tumourboards, tumourboard)
+	repos.UpdateSample(*sample)
 	return nil
 }
 
@@ -299,4 +384,50 @@ func setupOptions() {
 	if keycloakFlags.Host != "" {
 		c.Keycloak.Host = keycloakFlags.Host
 	}
+}
+
+func hash(s string) string {
+	h := fnv.New32a()
+	h.Write([]byte(s))
+	return fmt.Sprint(h.Sum32())
+}
+
+//AddHashes for all sub fields
+func AddHashes(sample *models.Sample) *models.Sample {
+	for _, complication := range sample.Complications {
+		jdata, _ := json.Marshal(complication)
+		jstring := hash(string(jdata))
+		complication.Hash = &jstring
+	}
+	for _, consent := range sample.Consents {
+		jdata, _ := json.Marshal(consent)
+		jstring := hash(string(jdata))
+		consent.Hash = &jstring
+	}
+	for _, diagnosis := range sample.Diagnosis {
+		jdata, _ := json.Marshal(diagnosis)
+		jstring := hash(string(jdata))
+		diagnosis.Hash = &jstring
+	}
+	for _, outcome := range sample.Outcomes {
+		jdata, _ := json.Marshal(outcome)
+		jstring := hash(string(jdata))
+		outcome.Hash = &jstring
+	}
+	for _, treatment := range sample.Treatments {
+		jdata, _ := json.Marshal(treatment)
+		jstring := hash(string(jdata))
+		treatment.Hash = &jstring
+	}
+	for _, tumourboard := range sample.Tumourboards {
+		jdata, _ := json.Marshal(tumourboard)
+		jstring := hash(string(jdata))
+		tumourboard.Hash = &jstring
+	}
+	for _, enrollment := range sample.Enrollments {
+		jdata, _ := json.Marshal(enrollment)
+		jstring := hash(string(jdata))
+		enrollment.Hash = &jstring
+	}
+	return sample
 }

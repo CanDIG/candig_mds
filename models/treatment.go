@@ -78,6 +78,9 @@ type Treatment struct {
 
 	// unexpected or unusual toxicity during treatment
 	UnexpectedOrUnusualToxicityDuringTreatment *string `json:"unexpected_or_unusual_toxicity_during_treatment,omitempty" db:"unexpected_or_unusual_toxicity_during_treatment"`
+
+	// hash induced neoplasm details
+	Hash *string `json:"hash,omitempty" db:"hash"`
 }
 
 // Validate validates this treatment

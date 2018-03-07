@@ -63,6 +63,9 @@ type Enrollment struct {
 
 	// treating centre province
 	TreatingCentreProvince *string `json:"treating_centre_province,omitempty" db:"treating_centre_province"`
+
+	// hash induced neoplasm details
+	Hash *string `json:"hash,omitempty" db:"hash"`
 }
 
 // Validate validates this enrollment

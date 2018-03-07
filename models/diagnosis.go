@@ -75,6 +75,9 @@ type Diagnosis struct {
 
 	// version or edition of the staging system
 	VersionOrEditionOfTheStagingSystem *string `json:"version_or_edition_of_the_staging_system,omitempty" db:"version_or_edition_of_the_staging_system"`
+
+	// hash induced neoplasm details
+	Hash *string `json:"hash,omitempty" db:"hash"`
 }
 
 // Validate validates this diagnosis

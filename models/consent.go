@@ -75,6 +75,9 @@ type Consent struct {
 
 	// was assent obtained
 	WasAssentObtained *string `json:"was_assent_obtained,omitempty" db:"was_assent_obtained"`
+
+	// hash induced neoplasm details
+	Hash *string `json:"hash,omitempty" db:"hash"`
 }
 
 // Validate validates this consent

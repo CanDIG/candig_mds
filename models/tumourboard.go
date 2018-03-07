@@ -105,6 +105,9 @@ type Tumourboard struct {
 
 	// type of validation
 	TypeOfValidation *string `json:"type_of_validation,omitempty" db:"type_of_validation"`
+
+	// hash induced neoplasm details
+	Hash *string `json:"hash,omitempty" db:"hash"`
 }
 
 // Validate validates this tumourboard
