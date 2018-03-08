@@ -23,7 +23,7 @@ func GetAllOutcomes(collection string) []*models.Outcome {
 func CheckIfOutcomeExists(hash string) bool {
 	c := database.SetCollection("sample")
 	samples := make([]*models.Sample, 0)
-	err := c.Find(bson.M{"outcome.hash": hash}).All(&samples)
+	err := c.Find(bson.M{"outcomes.hash": hash}).All(&samples)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -23,7 +23,7 @@ func GetAllTumourboards(collection string) []*models.Tumourboard {
 func CheckIfTumourboardExists(hash string) bool {
 	c := database.SetCollection("sample")
 	samples := make([]*models.Sample, 0)
-	err := c.Find(bson.M{"tumourboard.hash": hash}).All(&samples)
+	err := c.Find(bson.M{"tumourboards.hash": hash}).All(&samples)
 	if err != nil {
 		log.Fatal(err)
 	}

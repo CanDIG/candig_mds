@@ -23,7 +23,7 @@ func GetAllEnrollments(collection string) []*models.Enrollment {
 func CheckIfEnrollmentExists(hash string) bool {
 	c := database.SetCollection("sample")
 	samples := make([]*models.Sample, 0)
-	err := c.Find(bson.M{"enrollment.hash": hash}).All(&samples)
+	err := c.Find(bson.M{"enrollments.hash": hash}).All(&samples)
 	if err != nil {
 		log.Fatal(err)
 	}

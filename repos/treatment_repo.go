@@ -23,7 +23,7 @@ func GetAllTreatments(collection string) []*models.Treatment {
 func CheckIfTreatmentExists(hash string) bool {
 	c := database.SetCollection("sample")
 	samples := make([]*models.Sample, 0)
-	err := c.Find(bson.M{"treatment.hash": hash}).All(&samples)
+	err := c.Find(bson.M{"treatments.hash": hash}).All(&samples)
 	if err != nil {
 		log.Fatal(err)
 	}

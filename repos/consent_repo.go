@@ -23,7 +23,7 @@ func GetAllConsents(collection string) []*models.Consent {
 func CheckIfConsentExists(hash string) bool {
 	c := database.SetCollection("sample")
 	samples := make([]*models.Sample, 0)
-	err := c.Find(bson.M{"consent.hash": hash}).All(&samples)
+	err := c.Find(bson.M{"consents.hash": hash}).All(&samples)
 	if err != nil {
 		log.Fatal(err)
 	}

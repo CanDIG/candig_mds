@@ -173,6 +173,12 @@ func addTumourboard(tumourboard *models.Tumourboard) error {
 	if tumourboard == nil {
 		return errors.New(500, "item must be present")
 	}
+	jdata, _ := json.Marshal(tumourboard)
+	jstring := hash(string(jdata))
+	tumourboard.Hash = &jstring
+	if repos.CheckIfTumourboardExists(*tumourboard.Hash) {
+		return errors.New(500, "Already Exists")
+	}
 	sample := repos.GetSampleByID(*tumourboard.SampleID)
 	if sample == nil {
 		return errors.New(500, "Sample does not exist")
