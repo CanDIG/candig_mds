@@ -264,7 +264,7 @@ func configureAPI(api *operations.CandigMetadataAPI) http.Handler {
 		keycloak.Init(KeycloakserverName, "http://"+ServerName, "/Jtree/metadata/0.1.0/columns", "/Jtree/metadata/0.1.0/logout")
 	}
 
-	database.DatabaseInit("candig", "mongodb://localhost:27017/")
+	database.Init("candig", "mongodb://localhost:27017/")
 
 	api.JSONConsumer = runtime.JSONConsumer()
 

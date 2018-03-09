@@ -12,8 +12,8 @@ var connectionString string
 var session *mgo.Session
 var err error
 
-//DatabaseInit creates a connection to the database
-func DatabaseInit(dbName, connectionstring string) {
+//Init creates a connection to the database
+func Init(dbName, connectionstring string) {
 	databaseName = dbName
 	connectionString = connectionstring + dbName
 
