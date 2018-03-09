@@ -1,7 +1,10 @@
 package repos
 
 import (
+	"encoding/json"
 	"log"
+
+	errors "github.com/go-openapi/errors"
 
 	"github.com/CanDIG/candig_mds/database"
 	"github.com/CanDIG/candig_mds/models"
@@ -36,4 +39,24 @@ func CheckIfEnrollmentExists(hash string) bool {
 //InsertEnrollment inserts a patient to the patient collection
 func InsertEnrollment(enrollment models.Enrollment) bool {
 	return database.Insert("enrollment", enrollment)
+}
+
+//AddEnrollment repo add to sample
+func AddEnrollment(enrollment *models.Enrollment) error {
+	if enrollment == nil {
+		return errors.New(500, "item must be present")
+	}
+	jdata, _ := json.Marshal(enrollment)
+	jstring := database.Hash(string(jdata))
+	enrollment.Hash = &jstring
+	if CheckIfEnrollmentExists(*enrollment.Hash) {
+		return errors.New(500, "Already Exists")
+	}
+	sample := GetSampleByID(*enrollment.SampleID)
+	if sample == nil {
+		return errors.New(500, "Sample does not exist")
+	}
+	sample.Enrollments = append(sample.Enrollments, enrollment)
+	UpdateSample(*sample)
+	return nil
 }

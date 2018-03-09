@@ -1,10 +1,12 @@
 package repos
 
 import (
+	"encoding/json"
 	"log"
 
 	"github.com/CanDIG/candig_mds/database"
 	"github.com/CanDIG/candig_mds/models"
+	errors "github.com/go-openapi/errors"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -36,4 +38,24 @@ func CheckIfTreatmentExists(hash string) bool {
 //InsertTreatment inserts a treatment to the treatment collection
 func InsertTreatment(treatment models.Treatment) bool {
 	return database.Insert("treatment", treatment)
+}
+
+//AddTreatment for treatments
+func AddTreatment(treatment *models.Treatment) error {
+	if treatment == nil {
+		return errors.New(500, "item must be present")
+	}
+	jdata, _ := json.Marshal(treatment)
+	jstring := database.Hash(string(jdata))
+	treatment.Hash = &jstring
+	if CheckIfTreatmentExists(*treatment.Hash) {
+		return errors.New(500, "Already Exists")
+	}
+	sample := GetSampleByID(*treatment.SampleID)
+	if sample == nil {
+		return errors.New(500, "Sample does not exist")
+	}
+	sample.Treatments = append(sample.Treatments, treatment)
+	UpdateSample(*sample)
+	return nil
 }

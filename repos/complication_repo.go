@@ -1,10 +1,12 @@
 package repos
 
 import (
+	"encoding/json"
 	"log"
 
 	"github.com/CanDIG/candig_mds/database"
 	"github.com/CanDIG/candig_mds/models"
+	errors "github.com/go-openapi/errors"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -36,4 +38,24 @@ func CheckIfComplicationExists(hash string) bool {
 //InsertComplication inserts a patient to the patient collection
 func InsertComplication(complication models.Complication) bool {
 	return database.Insert("complication", complication)
+}
+
+//AddComplication 4 comp
+func AddComplication(complication *models.Complication) error {
+	if complication == nil {
+		return errors.New(500, "item must be present")
+	}
+	jdata, _ := json.Marshal(complication)
+	jstring := database.Hash(string(jdata))
+	complication.Hash = &jstring
+	if CheckIfComplicationExists(*complication.Hash) {
+		return errors.New(500, "Already Exists")
+	}
+	sample := GetSampleByID(*complication.SampleID)
+	if sample == nil {
+		return errors.New(500, "Sample does not exist")
+	}
+	sample.Complications = append(sample.Complications, complication)
+	UpdateSample(*sample)
+	return nil
 }

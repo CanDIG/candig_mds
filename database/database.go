@@ -1,6 +1,8 @@
 package database
 
 import (
+	"fmt"
+	"hash/fnv"
 	"log"
 
 	"gopkg.in/mgo.v2"
@@ -70,4 +72,11 @@ func RemoveAll(collection string) bool {
 		return false
 	}
 	return true
+}
+
+//Hash hashes a string
+func Hash(s string) string {
+	h := fnv.New32a()
+	h.Write([]byte(s))
+	return fmt.Sprint(h.Sum32())
 }

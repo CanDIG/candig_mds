@@ -20,6 +20,7 @@ import (
 	graceful "github.com/tylerb/graceful"
 
 	"github.com/CanDIG/candig_mds/database"
+	"github.com/CanDIG/candig_mds/dummydata"
 	"github.com/CanDIG/candig_mds/models"
 	"github.com/CanDIG/candig_mds/repos"
 	"github.com/CanDIG/candig_mds/restapi/operations"
@@ -56,136 +57,31 @@ func addSample(sample *models.Sample) error {
 }
 
 func addEnrollment(enrollment *models.Enrollment) error {
-	if enrollment == nil {
-		return errors.New(500, "item must be present")
-	}
-	jdata, _ := json.Marshal(enrollment)
-	jstring := hash(string(jdata))
-	enrollment.Hash = &jstring
-	if repos.CheckIfEnrollmentExists(*enrollment.Hash) {
-		return errors.New(500, "Already Exists")
-	}
-	sample := repos.GetSampleByID(*enrollment.SampleID)
-	if sample == nil {
-		return errors.New(500, "Sample does not exist")
-	}
-	sample.Enrollments = append(sample.Enrollments, enrollment)
-	repos.UpdateSample(*sample)
-	return nil
+	return repos.AddEnrollment(enrollment)
 }
 
 func addConsent(consent *models.Consent) error {
-	if consent == nil {
-		return errors.New(500, "item must be present")
-	}
-	jdata, _ := json.Marshal(consent)
-	jstring := hash(string(jdata))
-	consent.Hash = &jstring
-	if repos.CheckIfConsentExists(*consent.Hash) {
-		return errors.New(500, "Already Exists")
-	}
-	sample := repos.GetSampleByID(*consent.SampleID)
-	if sample == nil {
-		return errors.New(500, "Sample does not exist")
-	}
-	sample.Consents = append(sample.Consents, consent)
-	repos.UpdateSample(*sample)
-	return nil
+	return repos.AddConsent(consent)
 }
 
 func addDiagnosis(diagnosis *models.Diagnosis) error {
-	if diagnosis == nil {
-		return errors.New(500, "item must be present")
-	}
-	jdata, _ := json.Marshal(diagnosis)
-	jstring := hash(string(jdata))
-	diagnosis.Hash = &jstring
-	if repos.CheckIfDiagnosisExists(*diagnosis.Hash) {
-		return errors.New(500, "Already Exists")
-	}
-	sample := repos.GetSampleByID(*diagnosis.SampleID)
-	if sample == nil {
-		return errors.New(500, "Sample does not exist")
-	}
-	sample.Diagnosis = append(sample.Diagnosis, diagnosis)
-	repos.UpdateSample(*sample)
-	return nil
+	return repos.AddDiagnosis(diagnosis)
 }
 
 func addTreatment(treatment *models.Treatment) error {
-	if treatment == nil {
-		return errors.New(500, "item must be present")
-	}
-	jdata, _ := json.Marshal(treatment)
-	jstring := hash(string(jdata))
-	treatment.Hash = &jstring
-	if repos.CheckIfTreatmentExists(*treatment.Hash) {
-		return errors.New(500, "Already Exists")
-	}
-	sample := repos.GetSampleByID(*treatment.SampleID)
-	if sample == nil {
-		return errors.New(500, "Sample does not exist")
-	}
-	sample.Treatments = append(sample.Treatments, treatment)
-	repos.UpdateSample(*sample)
-	return nil
+	return repos.AddTreatment(treatment)
 }
 
 func addOutcome(outcome *models.Outcome) error {
-	if outcome == nil {
-		return errors.New(500, "item must be present")
-	}
-	jdata, _ := json.Marshal(outcome)
-	jstring := hash(string(jdata))
-	outcome.Hash = &jstring
-	if repos.CheckIfOutcomeExists(*outcome.Hash) {
-		return errors.New(500, "Already Exists")
-	}
-	sample := repos.GetSampleByID(*outcome.SampleID)
-	if sample == nil {
-		return errors.New(500, "Sample does not exist")
-	}
-	sample.Outcomes = append(sample.Outcomes, outcome)
-	repos.UpdateSample(*sample)
-	return nil
+	return repos.AddOutcome(outcome)
 }
 
 func addComplication(complication *models.Complication) error {
-	if complication == nil {
-		return errors.New(500, "item must be present")
-	}
-	jdata, _ := json.Marshal(complication)
-	jstring := hash(string(jdata))
-	complication.Hash = &jstring
-	if repos.CheckIfComplicationExists(*complication.Hash) {
-		return errors.New(500, "Already Exists")
-	}
-	sample := repos.GetSampleByID(*complication.SampleID)
-	if sample == nil {
-		return errors.New(500, "Sample does not exist")
-	}
-	sample.Complications = append(sample.Complications, complication)
-	repos.UpdateSample(*sample)
-	return nil
+	return repos.AddComplication(complication)
 }
 
 func addTumourboard(tumourboard *models.Tumourboard) error {
-	if tumourboard == nil {
-		return errors.New(500, "item must be present")
-	}
-	jdata, _ := json.Marshal(tumourboard)
-	jstring := hash(string(jdata))
-	tumourboard.Hash = &jstring
-	if repos.CheckIfTumourboardExists(*tumourboard.Hash) {
-		return errors.New(500, "Already Exists")
-	}
-	sample := repos.GetSampleByID(*tumourboard.SampleID)
-	if sample == nil {
-		return errors.New(500, "Sample does not exist")
-	}
-	sample.Tumourboards = append(sample.Tumourboards, tumourboard)
-	repos.UpdateSample(*sample)
-	return nil
+	return repos.AddTumourboard(tumourboard)
 }
 
 func getSamplesByQuery(query *models.Query) []*models.Sample {
@@ -265,6 +161,10 @@ func configureAPI(api *operations.CandigMetadataAPI) http.Handler {
 	}
 
 	database.Init("candig", "mongodb://localhost:27017/")
+
+	if dataGenFlags.Generate != 0 {
+		dummydata.GenerateData(dataGenFlags.Generate)
+	}
 
 	api.JSONConsumer = runtime.JSONConsumer()
 

@@ -1,10 +1,12 @@
 package repos
 
 import (
+	"encoding/json"
 	"log"
 
 	"github.com/CanDIG/candig_mds/database"
 	"github.com/CanDIG/candig_mds/models"
+	errors "github.com/go-openapi/errors"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -36,4 +38,24 @@ func CheckIfOutcomeExists(hash string) bool {
 //InsertOutcome inserts a outcome to the outcome collection
 func InsertOutcome(outcome models.Outcome) bool {
 	return database.Insert("outcome", outcome)
+}
+
+//AddOutcome 4 outcome
+func AddOutcome(outcome *models.Outcome) error {
+	if outcome == nil {
+		return errors.New(500, "item must be present")
+	}
+	jdata, _ := json.Marshal(outcome)
+	jstring := database.Hash(string(jdata))
+	outcome.Hash = &jstring
+	if CheckIfOutcomeExists(*outcome.Hash) {
+		return errors.New(500, "Already Exists")
+	}
+	sample := GetSampleByID(*outcome.SampleID)
+	if sample == nil {
+		return errors.New(500, "Sample does not exist")
+	}
+	sample.Outcomes = append(sample.Outcomes, outcome)
+	UpdateSample(*sample)
+	return nil
 }
