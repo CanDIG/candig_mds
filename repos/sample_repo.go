@@ -45,6 +45,21 @@ func GetSampleByID(sampleID string) *models.Sample {
 	return sample
 }
 
+//GetSamplesByQuery gets a sample by its id
+func GetSamplesByQuery(query *models.Query) []*models.Sample {
+	c := database.SetCollection("sample")
+	samples := make([]*models.Sample, 0)
+	// queryMap := database.QueryToBSONString(*query)
+	// err := c.Find(queryMap).All(&samples)
+	q := database.BuildQuery(*query)
+	err := c.Find(q).All(&samples)
+	if err != nil {
+		log.Printf("%v", err)
+		return nil
+	}
+	return samples
+}
+
 //InsertSample inserts a patient to the patient collection
 func InsertSample(sample models.Sample) bool {
 	return database.Insert("sample", sample)

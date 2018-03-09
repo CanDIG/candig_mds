@@ -189,7 +189,7 @@ func addTumourboard(tumourboard *models.Tumourboard) error {
 }
 
 func getSamplesByQuery(query *models.Query) []*models.Sample {
-	list := repos.GetAllSamples("sample")
+	list := repos.GetSamplesByQuery(query)
 	return list
 }
 
