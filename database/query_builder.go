@@ -5,6 +5,8 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
+var emptyString string
+
 //BuildQuery makes a query
 func BuildQuery(query models.Query) bson.M {
 	pipeline := bson.M{}
@@ -71,7 +73,54 @@ func AddConditionToQuery(condition []string, p bson.M) bson.M {
 			},
 		}
 		break
-
+	case "Begins with":
+		p = bson.M{
+			logic: []interface{}{
+				bson.M{condition[1]: bson.RegEx{"^" + condition[3], emptyString}},
+				p,
+			},
+		}
+		break
+	case "Not begins with":
+		p = bson.M{
+			logic: []interface{}{
+				bson.M{condition[1]: bson.RegEx{"^((?!" + condition[3] + ").)", emptyString}},
+				p,
+			},
+		}
+		break
+	case "Ends with":
+		p = bson.M{
+			logic: []interface{}{
+				bson.M{condition[1]: bson.RegEx{condition[3] + "$", emptyString}},
+				p,
+			},
+		}
+		break
+	case "Not ends with":
+		p = bson.M{
+			logic: []interface{}{
+				bson.M{condition[1]: bson.RegEx{".+(?<!" + condition[3] + ")$", emptyString}},
+				p,
+			},
+		}
+		break
+	case "Contains":
+		p = bson.M{
+			logic: []interface{}{
+				bson.M{condition[1]: bson.RegEx{condition[3] + ".*", emptyString}},
+				p,
+			},
+		}
+		break
+	case "Not contains":
+		p = bson.M{
+			logic: []interface{}{
+				bson.M{condition[1]: bson.RegEx{"^((?!" + condition[3] + ").)*$", emptyString}},
+				p,
+			},
+		}
+		break
 	default:
 		return p
 	}
