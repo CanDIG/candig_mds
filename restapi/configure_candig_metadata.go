@@ -29,19 +29,7 @@ import (
 var c config.Conf
 
 func addPatient(patient *models.Patient) error {
-	if patient == nil {
-		return errors.New(500, "item must be present")
-	}
-	if repos.CheckIfPatientExists(*patient.PatientID) {
-		return errors.New(500, "Already Exists")
-	}
-	sample := repos.GetSampleByID(*patient.SampleID)
-	if sample == nil {
-		return errors.New(500, "Sample does not exist")
-	}
-	sample.Patient = patient
-	repos.UpdateSample(*sample)
-	return nil
+	return repos.AddPatient(patient)
 }
 
 func addSample(sample *models.Sample) error {

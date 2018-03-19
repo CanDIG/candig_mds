@@ -60,6 +60,43 @@ func makeSample() models.Sample {
 
 func makePatient() models.Patient {
 	patient := models.Patient{}
+	AutopsyTissueForResearch := makeRandomString()
+	patient.AutopsyTissueForResearch = &AutopsyTissueForResearch
+	CauseOfDeath := makeRandomString()
+	patient.CauseOfDeath = &CauseOfDeath
+	DateOfBirth := makeRandomDate()
+	patient.DateOfBirth = &DateOfBirth
+	DateOfDeath := makeRandomDate()
+	patient.DateOfDeath = &DateOfDeath
+	DetailsOfPredispositionSyndrome := makeRandomString()
+	patient.DetailsOfPredispositionSyndrome = &DetailsOfPredispositionSyndrome
+	Ethnicity := makeRandomString()
+	patient.Ethnicity = &Ethnicity
+	FamilyHistoryAndRiskFactors := makeRandomString()
+	patient.FamilyHistoryAndRiskFactors = &FamilyHistoryAndRiskFactors
+	FamilyHistoryOfPredispositionSyndrome := makeRandomString()
+	patient.FamilyHistoryOfPredispositionSyndrome = &FamilyHistoryOfPredispositionSyndrome
+	Gender := makeRandomString()
+	patient.Gender = &Gender
+	GeneticCancerSyndrome := makeRandomString()
+	patient.GeneticCancerSyndrome = &GeneticCancerSyndrome
+	OccupationalOrEnvironmentalExposure := makeRandomString()
+	patient.OccupationalOrEnvironmentalExposure = &OccupationalOrEnvironmentalExposure
+	OtherGeneticConditionOrSignificantComorbidity := makeRandomString()
+	patient.OtherGeneticConditionOrSignificantComorbidity = &OtherGeneticConditionOrSignificantComorbidity
+	OtherIds := makeRandomString()
+	patient.OtherIds = &OtherIds
+	PatientID := makeRandomString()
+	patient.PatientID = &PatientID
+	PriorMalignancy := makeRandomString()
+	patient.PriorMalignancy = &PriorMalignancy
+	ProvinceOfResidence := makeRandomString()
+	patient.ProvinceOfResidence = &ProvinceOfResidence
+	Race := makeRandomString()
+	patient.Race = &Race
+	SampleID := string(sampleID)
+	patient.SampleID = &SampleID
+
 	return patient
 }
 

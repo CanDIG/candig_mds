@@ -37,7 +37,7 @@ func generatePatients(number int) {
 	for i := 0; i < number; i++ {
 		sampleID++
 		tempPatient := makePatient()
-		repos.InsertPatient(tempPatient)
+		repos.AddPatient(&tempPatient)
 	}
 }
 
