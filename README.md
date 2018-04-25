@@ -1,51 +1,47 @@
-# JTree
+# CanDIG
 
-Database Access API
+Database Access API for mongodb schmea
 
-[View On SwaggerHub](https://app.swaggerhub.com/apis/JTree/jtree-metadata_api/0.1.0)
-</br>
-[![Build Status](https://travis-ci.org/CanDIG/candig_mds.svg?branch=master)](https://travis-ci.org/CanDIG/candig_mds)
-[![Go Report Card](https://goreportcard.com/badge/CanDIG/candig_mds)](https://goreportcard.com/report/CanDIG/candig_mds)
 
 ## Getting started
 
 This project requires Go to be installed. On OS X with Homebrew you can just run `brew install go`.
 
+Installing this code:
+`$ go get github.com/CanDIG/candig_mds`
+
+
 Running it then should be as simple as:
 
 ```console
-$ make get-deps
-$ make database
 $ make build
-$ ./bin/jtree
+$ ./bin/candig
 ```
-To generate fake data, run `$ ./bin/jtree -g=100` instead, where 100 is the amount of dummy data requested
+To generate fake data, run `$ ./bin/candig -g=100`, where 100 is the amount of dummy data requested
+To run on a spesific port run `$ ./bin/candig -p=8000`, where 8000 is the desired port
+
 
 
 Endpoints:
 
 ```sh
-# This will return all of the columns in the database
-$ curl http://127.0.0.1:8000/Jtree/metadata/0.1.0/columns
-[]
+# QUERIES
 
-# This is an example query that will return all data from the samples and patients tables
-$ curl -X POST -H "Content-Type: application/json" /
- -d '{"selected_tables":["samples", "patients"], "selected_fields":["*"], "selected_conditions":[]}' /
- 127.0.0.1:8000/Jtree/metadata/0.1.0/query
+# This is an example query that will return all data from every table in the database
+$ curl http://127.0.0.1:8000/Candig/query -X POST -H "content-type:application/json" -d 
+'{"selected_fields":["*"],“selected_tables":[],"selected_conditions":[]}'
+
 
 # INSERTS
-# samples
+# <object_name>
 $ curl -X POST -H "Content-Type: application/json" /
- -d '{`# See models.samples for object structure`}' 127.0.0.1:8000/Jtree/metadata/0.1.0/samples
-
-# patients
-$ curl -X POST -H "Content-Type: application/json" /
- -d '{`# See models.patients for object structure`}' 127.0.0.1:8000/Jtree/metadata/0.1.0/patients
-
-# experiments
-$ curl -X POST -H "Content-Type: application/json" /
- -d '{`# See models.experiments for object structure`}' 127.0.0.1:8000/Jtree/metadata/0.1.0/experiments
-
-
+ -d '{`# See models.<object_name> for object structure`}' 127.0.0.1:8000/Candig/<object_name>
 ```
+
+# Server Dependencies
+- Go
+- Go Libraries
+- Mongodb
+
+*Note*: The object structure for the database will create itself as long as mongo is running on the default port
+

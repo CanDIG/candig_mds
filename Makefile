@@ -1,4 +1,4 @@
-.PHONY: build build-alpine clean test database help default 
+.PHONY: build build-alpine clean test help default 
 
 BIN_NAME=candig
 
@@ -60,6 +60,4 @@ test:
 	go test ./tests
 	bash travisCheck.sh 
 
-database: 
-	bash ./sql/DatabaseRebuild.sh
 

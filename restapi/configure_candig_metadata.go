@@ -9,10 +9,8 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"strconv"
 
 	config "github.com/Bio-core/jtree/conf"
-	keycloak "github.com/Bio-core/keycloakgo"
 	errors "github.com/go-openapi/errors"
 	runtime "github.com/go-openapi/runtime"
 	middleware "github.com/go-openapi/runtime/middleware"
@@ -141,12 +139,12 @@ func configureAPI(api *operations.CandigMetadataAPI) http.Handler {
 	c.GetConf()
 	setupOptions()
 
-	ServerName := c.App.Host + ":" + strconv.Itoa(c.App.Port)
-	KeycloakserverName := c.Keycloak.Host
+	// ServerName := c.App.Host + ":" + strconv.Itoa(c.App.Port)
+	// KeycloakserverName := c.Keycloak.Host
 
-	if keycloakFlags.Active {
-		keycloak.Init(KeycloakserverName, "http://"+ServerName, "/Jtree/metadata/0.1.0/columns", "/Jtree/metadata/0.1.0/logout")
-	}
+	// if keycloakFlags.Active {
+	// 	keycloak.Init(KeycloakserverName, "http://"+ServerName, "/Jtree/metadata/0.1.0/columns", "/Jtree/metadata/0.1.0/logout")
+	// }
 
 	database.Init("candig", "mongodb://localhost:27017/")
 
