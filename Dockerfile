@@ -1,9 +1,12 @@
+# ARG DEV=True
+
 # Use golang:1.13 when becomes available
-FROM golang:1.12
+FROM golang:1.13
 
 WORKDIR /go/src/github.com/Bio-core/jtree
 COPY . .
 
+# RUN go get ./...
 RUN go get -d -v ./...
 RUN go install -v ./...
 

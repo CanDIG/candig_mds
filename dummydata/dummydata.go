@@ -64,12 +64,12 @@ func makeRandomNames(id int, last bool) string {
 		id = rand.Intn(99) + 1
 	}
 	if last {
-		return random[id-1].Surname
-		// return "DEF"
+		// return random[id-1].Surname
+		return "DEF"
 	}
 	// return random[1].Name
-	return random[id-1].Name
-	// return "ABC"
+	// return random[id-1].Name
+	return "ABC"
 }
 
 func makeRandomDate() string {
@@ -103,8 +103,9 @@ func makeRandomBool() bool {
 }
 
 func makeRandomGene() string {
-	num := genrand(0, 568, 0, 568, 5)
-	return genes.Genes[num]
+	// num := genrand(0, 568, 0, 568, 5)
+	// return genes.Genes[num]
+	return "random"
 }
 
 func getManyRandomPeople(num int) []RandomPerson {

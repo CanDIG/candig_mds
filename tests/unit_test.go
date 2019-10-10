@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"fmt"
 	"bytes"
 	"encoding/json"
 	"io/ioutil"
@@ -19,7 +20,11 @@ import (
 	"github.com/go-openapi/loads"
 )
 
-var host = "http://127.0.0.1:8000"
+type Patients []models.Patient
+type Samples []models.Sample
+type Experiments []models.Experiment
+type Results []models.Result
+type ResultDetails []models.Resultdetails
 
 func TestMain(m *testing.M) {
 	testResults := m.Run()
@@ -90,9 +95,9 @@ func TestUrls(t *testing.T) {
 	}
 }
 
-func TestAddPatientPOST(t *testing.T) {
-
-	patient := dummydata.MakePatient(-1)
+func TestAddPatient(t *testing.T) {
+	
+	patient := dummydata.MakePatient(1)
 	person1Bytes, err := json.Marshal(patient)
 
 	if err != nil {
@@ -122,6 +127,7 @@ func TestAddPatientPOST(t *testing.T) {
 		t.Fail()
 		return
 	}
+	fmt.Println(string(content))
 
 	if err != nil {
 		t.Fail()
@@ -132,15 +138,22 @@ func TestAddPatientPOST(t *testing.T) {
 
 }
 
-func TestUpdatePatientPOST(t *testing.T) {
+func TestUpdatePatient(t *testing.T) {
+	content := GetQueryResponse("*", "patients", []string{"AND", "patients.patient_id", "Equal to", "1"})
 
-	patient := repos.GetPatientByID("1")
-	first := "Mitchell"
-	last := "Strong"
-	patient.FirstName = &first
-	patient.LastName = &last
-	person1Bytes, err := json.Marshal(patient)
+	var patients Patients
+	
+	err := json.Unmarshal(content, &patients)
+	if err != nil {
+		log.Println(err)
+	}
 
+	first := "Hello"
+	last := "World"
+	patients[0].FirstName = &first
+	patients[0].LastName = &last
+
+	person1Bytes, err := json.Marshal(patients[0])
 	if err != nil {
 		t.Fail()
 		return
@@ -148,7 +161,7 @@ func TestUpdatePatientPOST(t *testing.T) {
 
 	body := bytes.NewReader(person1Bytes)
 
-	req, err := http.NewRequest("POST", host+"/Jtree/metadata/0.1.0/patient", body)
+	req, err := http.NewRequest("PUT", host+"/Jtree/metadata/0.1.0/patient/1", body)
 
 	if err != nil {
 		t.Fail()
@@ -158,36 +171,48 @@ func TestUpdatePatientPOST(t *testing.T) {
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := http.DefaultClient.Do(req)
-	content, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		t.Fail()
-		return
-	}
-	if resp.Status != "200 OK" && string(content) != "error" {
+	if (err != nil) {
 		t.Fail()
 		return
 	}
 
-	if err != nil {
+	if resp.Status != "201 Created" {
 		t.Fail()
 		return
 	}
 
 	defer resp.Body.Close()
-
-	patientNew := repos.GetPatientByID("1")
-
-	if *patientNew.FirstName != first || *patientNew.LastName != last {
-		t.Fail()
-		return
-	}
 
 	return
 }
 
-func TestAddSamplePOST(t *testing.T) {
+func TestDeletePatient(t *testing.T) {
 
-	sample := dummydata.MakeSample(1, -1)
+	req, err := http.NewRequest("DELETE", host + "/Jtree/metadata/0.1.0/patient/1", nil)
+	if err != nil {
+		t.Fail()
+		return
+	}
+
+	req.Header.Set("Content-Type", "application/json")	
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Fail()
+		return
+	}
+
+	defer resp.Body.Close()
+
+	if resp.Status != "200 OK" {
+		t.Fail()
+		return
+	}
+}
+
+func TestAddSample(t *testing.T) {
+
+	sample := dummydata.MakeSample(1, 1)
 	sample1Bytes, err := json.Marshal(sample)
 
 	if err != nil {
@@ -217,6 +242,7 @@ func TestAddSamplePOST(t *testing.T) {
 		t.Fail()
 		return
 	}
+	fmt.Println(string(content))
 
 	if err != nil {
 		t.Fail()
@@ -227,12 +253,21 @@ func TestAddSamplePOST(t *testing.T) {
 
 }
 
-func TestUpdateSamplePOST(t *testing.T) {
+func TestUpdateSample(t *testing.T) {
 
-	sample := repos.GetSampleByID("1")
+	content := GetQueryResponse("*", "samples", []string{"AND", "samples.sample_id", "Equal to", "1"})
+
+	var samples Samples
+	
+	err := json.Unmarshal(content, &samples)
+	if err != nil {
+		log.Println(err)
+	}
+
 	comments := "updated"
-	sample.Comments = &comments
-	sample1Bytes, err := json.Marshal(sample)
+	samples[0].Comments = &comments
+
+	sample1Bytes, err := json.Marshal(samples[0])
 
 	if err != nil {
 		t.Fail()
@@ -241,8 +276,8 @@ func TestUpdateSamplePOST(t *testing.T) {
 
 	body := bytes.NewReader(sample1Bytes)
 
-	req, err := http.NewRequest("POST", host+"/Jtree/metadata/0.1.0/sample", body)
-
+	req, err := http.NewRequest("PUT", host+"/Jtree/metadata/0.1.0/sample/1", body)
+	
 	if err != nil {
 		t.Fail()
 		return
@@ -251,17 +286,32 @@ func TestUpdateSamplePOST(t *testing.T) {
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := http.DefaultClient.Do(req)
-
-	content, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		t.Fail()
 		return
 	}
-	if resp.Status != "200 OK" && string(content) != "error" {
+
+	if resp.Status != "200 OK" {
 		t.Fail()
 		return
 	}
 
+	defer resp.Body.Close()
+
+	return
+}
+
+func TestDeleteSample(t *testing.T) {
+
+	req, err := http.NewRequest("DELETE", host + "/Jtree/metadata/0.1.0/sample/1", nil)
+	if err != nil {
+		t.Fail()
+		return
+	}
+
+	req.Header.Set("Content-Type", "application/json")	
+
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		t.Fail()
 		return
@@ -269,19 +319,15 @@ func TestUpdateSamplePOST(t *testing.T) {
 
 	defer resp.Body.Close()
 
-	sampleNew := repos.GetSampleByID("1")
-
-	if *sampleNew.Comments != comments {
+	if resp.Status != "200 OK" {
 		t.Fail()
 		return
 	}
-
-	return
 }
 
-func TestAddExperimentPOST(t *testing.T) {
+func TestAddExperiment(t *testing.T) {
 
-	experiment := dummydata.MakeExperiment(1, -1)
+	experiment := dummydata.MakeExperiment(1, 1)
 	experiment1Bytes, err := json.Marshal(experiment)
 
 	if err != nil {
@@ -311,6 +357,7 @@ func TestAddExperimentPOST(t *testing.T) {
 		t.Fail()
 		return
 	}
+	fmt.Println(string(content))
 
 	if err != nil {
 		t.Fail()
@@ -321,12 +368,21 @@ func TestAddExperimentPOST(t *testing.T) {
 
 }
 
-func TestUpdateExperimentPOST(t *testing.T) {
+func TestUpdateExperiment(t *testing.T) {
 
-	experiment := repos.GetExperimentByID("1")
+	content := GetQueryResponse("*", "experiments", []string{"AND", "experiments.experiment_id", "Equal to", "1"})
+
+	var experiments Experiments
+	
+	err := json.Unmarshal(content, &experiments)
+	if err != nil {
+		log.Println(err)
+	}
+
 	projectName := "updated"
-	experiment.ProjectName = &projectName
-	experiment1Bytes, err := json.Marshal(experiment)
+	experiments[0].ProjectName = &projectName
+
+	experiment1Bytes, err := json.Marshal(experiments[0])
 
 	if err != nil {
 		t.Fail()
@@ -335,7 +391,7 @@ func TestUpdateExperimentPOST(t *testing.T) {
 
 	body := bytes.NewReader(experiment1Bytes)
 
-	req, err := http.NewRequest("POST", host+"/Jtree/metadata/0.1.0/experiment", body)
+	req, err := http.NewRequest("PUT", host+"/Jtree/metadata/0.1.0/experiment/1", body)
 
 	if err != nil {
 		t.Fail()
@@ -345,17 +401,32 @@ func TestUpdateExperimentPOST(t *testing.T) {
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := http.DefaultClient.Do(req)
-
-	content, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		t.Fail()
 		return
 	}
-	if resp.Status != "200 OK" && string(content) != "error" {
+
+	if resp.Status != "200 OK" {
 		t.Fail()
 		return
 	}
 
+	defer resp.Body.Close()
+
+	return
+}
+
+func TestDeleteExperiment(t *testing.T) {
+
+	req, err := http.NewRequest("DELETE", host + "/Jtree/metadata/0.1.0/experiment/1", nil)
+	if err != nil {
+		t.Fail()
+		return
+	}
+
+	req.Header.Set("Content-Type", "application/json")	
+
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		t.Fail()
 		return
@@ -363,19 +434,15 @@ func TestUpdateExperimentPOST(t *testing.T) {
 
 	defer resp.Body.Close()
 
-	experimentNew := repos.GetExperimentByID("1")
-
-	if *experimentNew.ProjectName != projectName {
+	if resp.Status != "200 OK" {
 		t.Fail()
 		return
 	}
-
-	return
 }
 
-func TestAddResultPOST(t *testing.T) {
+func TestAddResult(t *testing.T) {
 
-	result := dummydata.MakeResult(1, -1)
+	result := dummydata.MakeResult(1, 1)
 	result1Bytes, err := json.Marshal(result)
 
 	if err != nil {
@@ -405,6 +472,7 @@ func TestAddResultPOST(t *testing.T) {
 		t.Fail()
 		return
 	}
+	fmt.Println(string(content))
 
 	if err != nil {
 		t.Fail()
@@ -415,12 +483,20 @@ func TestAddResultPOST(t *testing.T) {
 
 }
 
-func TestUpdateResultPOST(t *testing.T) {
+func TestUpdateResult(t *testing.T) {
 
-	result := repos.GetResultByID("1")
+	content := GetQueryResponse("*", "results", []string{"AND", "results.results_id", "Equal to", "1"})
+
+	var results Results
+	
+	err := json.Unmarshal(content, &results)
+	if err != nil {
+		log.Println(err)
+	}
+
 	uid := "updated"
-	result.UID = &uid
-	result1Bytes, err := json.Marshal(result)
+	results[0].UID = &uid
+	result1Bytes, err := json.Marshal(results[0])
 
 	if err != nil {
 		t.Fail()
@@ -429,7 +505,7 @@ func TestUpdateResultPOST(t *testing.T) {
 
 	body := bytes.NewReader(result1Bytes)
 
-	req, err := http.NewRequest("POST", host+"/Jtree/metadata/0.1.0/result", body)
+	req, err := http.NewRequest("PUT", host+"/Jtree/metadata/0.1.0/result/1", body)
 
 	if err != nil {
 		t.Fail()
@@ -439,16 +515,32 @@ func TestUpdateResultPOST(t *testing.T) {
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := http.DefaultClient.Do(req)
-
-	content, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		t.Fail()
 		return
 	}
-	if resp.Status != "200 OK" && string(content) != "error" {
+
+	if resp.Status != "200 OK" {
 		t.Fail()
 		return
 	}
+
+	defer resp.Body.Close()
+
+	return
+}
+
+func TestDeleteResult(t *testing.T) {
+
+	req, err := http.NewRequest("DELETE", host + "/Jtree/metadata/0.1.0/result/1", nil)
+	if err != nil {
+		t.Fail()
+		return
+	}
+
+	req.Header.Set("Content-Type", "application/json")	
+
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		t.Fail()
 		return
@@ -456,19 +548,15 @@ func TestUpdateResultPOST(t *testing.T) {
 
 	defer resp.Body.Close()
 
-	resultNew := repos.GetResultByID("1")
-
-	if *resultNew.UID != uid {
+	if resp.Status != "200 OK" {
 		t.Fail()
 		return
 	}
-
-	return
 }
 
-func TestAddResultDetailPOST(t *testing.T) {
+func TestAddResDetail(t *testing.T) {
 
-	result := dummydata.MakeResultDetail(1, -1)
+	result := dummydata.MakeResultDetail(1, 1)
 	result1Bytes, err := json.Marshal(result)
 
 	if err != nil {
@@ -498,6 +586,7 @@ func TestAddResultDetailPOST(t *testing.T) {
 		t.Fail()
 		return
 	}
+	fmt.Println(string(content))
 
 	if err != nil {
 		t.Fail()
@@ -508,12 +597,20 @@ func TestAddResultDetailPOST(t *testing.T) {
 
 }
 
-func TestUpdateResultDetailPOST(t *testing.T) {
+func TestUpdateResDetail(t *testing.T) {
 
-	result := repos.GetResultDetailByID("1")
+	content := GetQueryResponse("*", "resultdetails", []string{"AND", "resultdetails.results_details_id", "Equal to", "1"})
+
+	var resultdetails ResultDetails
+	
+	err := json.Unmarshal(content, &resultdetails)
+	if err != nil {
+		log.Println(err)
+	}
+
 	uid := "updated"
-	result.UID = &uid
-	result1Bytes, err := json.Marshal(result)
+	resultdetails[0].UID = &uid
+	result1Bytes, err := json.Marshal(resultdetails[0])
 
 	if err != nil {
 		t.Fail()
@@ -522,7 +619,7 @@ func TestUpdateResultDetailPOST(t *testing.T) {
 
 	body := bytes.NewReader(result1Bytes)
 
-	req, err := http.NewRequest("POST", host+"/Jtree/metadata/0.1.0/resultdetails", body)
+	req, err := http.NewRequest("PUT", host+"/Jtree/metadata/0.1.0/resultdetails/1", body)
 
 	if err != nil {
 		t.Fail()
@@ -532,15 +629,32 @@ func TestUpdateResultDetailPOST(t *testing.T) {
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := http.DefaultClient.Do(req)
-	content, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		t.Fail()
 		return
 	}
-	if resp.Status != "200 OK" && string(content) != "error" {
+
+	if resp.Status != "200 OK" {
 		t.Fail()
 		return
 	}
+
+	defer resp.Body.Close()
+
+	return
+}
+
+func TestDeleteResDetail(t *testing.T) {
+
+	req, err := http.NewRequest("DELETE", host + "/Jtree/metadata/0.1.0/resultdetails/1", nil)
+	if err != nil {
+		t.Fail()
+		return
+	}
+
+	req.Header.Set("Content-Type", "application/json")	
+
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		t.Fail()
 		return
@@ -548,14 +662,10 @@ func TestUpdateResultDetailPOST(t *testing.T) {
 
 	defer resp.Body.Close()
 
-	resultNew := repos.GetResultByID("1")
-
-	if *resultNew.UID != uid {
+	if resp.Status != "200 OK" {
 		t.Fail()
 		return
 	}
-
-	return
 }
 
 func TestQueries(t *testing.T) {
